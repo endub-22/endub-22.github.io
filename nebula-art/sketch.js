@@ -6,8 +6,8 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
-  frameRate(60);         // aim for smooth animation
-  loop(); 
+  frameRate(30);         // aim for smooth animation
+  noiseDetail(4, 0.5);  // 4 octaves, falloff of 0.5
 }
 
 function draw() {
