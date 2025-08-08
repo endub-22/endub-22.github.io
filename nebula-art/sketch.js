@@ -7,6 +7,7 @@ function setup() {
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
   frameRate(30);         // aim for smooth animation
+  loop(); 
 }
 
 function draw() {
