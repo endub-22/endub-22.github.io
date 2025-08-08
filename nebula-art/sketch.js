@@ -1,4 +1,4 @@
-let noiseScale = 0.005;
+let noiseScale = 0.002;
 let t = 0;               // time offset
 let tSpeed = 0.05;      // how fast the nebula “evolves”
 
@@ -7,7 +7,7 @@ function setup() {
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
   frameRate(30);         // aim for smooth animation
-  noiseDetail(4, 0.5);  // 4 octaves, falloff of 0.5
+  noiseDetail(8, 0.3);  // 4 octaves, falloff of 0.5
 }
 
 function draw() {
