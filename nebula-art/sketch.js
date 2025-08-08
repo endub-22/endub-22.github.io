@@ -27,9 +27,11 @@ function setup() {
   gui.add(params, 'falloff',    0,      1,    0.01)
      .name('Falloff')
      .onChange(v => noiseDetail(params.octaves, v));
+  loop();
 }
 
 function draw() {
+  console.log("frame", frameCount, "t=", t.toFixed(2));
   loadPixels();
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
