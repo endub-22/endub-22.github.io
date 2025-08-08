@@ -1,6 +1,6 @@
 let noiseScale = 0.005;
 let t = 0;               // time offset
-let tSpeed = 0.003;      // how fast the nebula “evolves”
+let tSpeed = 0.02;      // how fast the nebula “evolves”
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -11,6 +11,7 @@ function setup() {
 }
 
 function draw() {
+  console.log("draw frame, t =", t.toFixed(3));
   loadPixels();
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
