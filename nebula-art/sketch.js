@@ -1,42 +1,43 @@
 let noiseScale = 0.005;
+let t = 0;               // time offset
+let tSpeed = 0.003;      // how fast the nebula “evolves”
 
 function setup() {
-  console.log("🔧 setup() running");
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
-  noLoop();
+  frameRate(30);         // aim for smooth animation
 }
 
 function draw() {
-  console.log("🎨 draw() running");
-  background(0);               // fill screen black so we see something
   loadPixels();
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
-      let n = noise(x * noiseScale, y * noiseScale);
-      // map noise to a colorful palette
-      let hue = map(n, 0, 1, 200, 320);  // tweak these
+      // 3D noise: x, y, and evolving t
+      let n = noise(x * noiseScale, y * noiseScale, t);
+      let hue = map(n, 0, 1, 200, 320);
       let sat = map(n, 0, 1, 50, 100);
       let bri = map(n, 0, 1, 20, 100);
+      let idx = (x + y * width) * 4;
       let col = color(hue, sat, bri);
-      pixels[(x + y * width) * 4 + 0] = red(col);
-      pixels[(x + y * width) * 4 + 1] = green(col);
-      pixels[(x + y * width) * 4 + 2] = blue(col);
-      pixels[(x + y * width) * 4 + 3] = 255;
+      pixels[idx + 0] = red(col);
+      pixels[idx + 1] = green(col);
+      pixels[idx + 2] = blue(col);
+      pixels[idx + 3] = 255;
     }
   }
   updatePixels();
+
+  // advance time so the noise “clouds” shift
+  t += tSpeed;
 }
 
-// regenerate on click
+// regenerate pattern speed on click
 function mousePressed() {
-  noiseSeed(floor(random(10000)));
-  redraw();
+  t = random(1000);
 }
 
-// full-screen on resize
+// handle resize
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  redraw();
 }
