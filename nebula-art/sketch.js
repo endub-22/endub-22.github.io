@@ -1,4 +1,10 @@
-let noiseScale = 0.002;
+// parameters object
+const params = {
+  noiseScale: 0.002,
+  tSpeed:     0.02,
+  octaves:    8,
+  falloff:    0.3
+};
 let t = 0;               // time offset
 let tSpeed = 0.05;      // how fast the nebula “evolves”
 
@@ -7,28 +13,47 @@ function setup() {
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
   frameRate(30);         // aim for smooth animation
-  noiseDetail(8, 0.3);  // 4 octaves, falloff of 0.5
+  
+  // initial noise settings
+  noiseDetail(params.octaves, params.falloff);
+
+  // build GUI
+  const gui = new dat.GUI();
+  gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001)
+     .name('Noise Scale');
+  gui.add(params, 'tSpeed', 0.001, 0.1, 0.001)
+     .name('Time Speed');
+  gui.add(params, 'octaves', 1, 16, 1)
+     .name('Octaves')
+     .onChange(v => noiseDetail(v, params.falloff));
+  gui.add(params, 'falloff', 0, 1, 0.01)
+     .name('Falloff')
+     .onChange(v => noiseDetail(params.octaves, v));
 }
 
 function draw() {
-  console.log("draw frame, t =", t.toFixed(3));
   loadPixels();
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
-      // 3D noise: x, y, and evolving t
-      let n = noise(x * noiseScale, y * noiseScale, t);
-      let hue = map(n, 0, 1, 200, 320);
-      let sat = map(n, 0, 1, 50, 100);
-      let bri = map(n, 0, 1, 20, 100);
+      let n = noise(
+        x * params.noiseScale,
+        y * params.noiseScale,
+        t
+      );
+      let h = map(n, 0, 1, 200, 320),
+          s = map(n, 0, 1, 50, 100),
+          b = map(n, 0, 1, 20, 100);
       let idx = (x + y * width) * 4;
-      let col = color(hue, sat, bri);
-      pixels[idx + 0] = red(col);
-      pixels[idx + 1] = green(col);
-      pixels[idx + 2] = blue(col);
-      pixels[idx + 3] = 255;
+      let c = color(h, s, b);
+      pixels[idx  ] = red(c);
+      pixels[idx+1] = green(c);
+      pixels[idx+2] = blue(c);
+      pixels[idx+3] = 255;
     }
   }
   updatePixels();
+  t += params.tSpeed;
+}
 
   // advance time so the noise “clouds” shift
   t += tSpeed;
