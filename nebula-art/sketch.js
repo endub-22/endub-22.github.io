@@ -1,12 +1,12 @@
 let noiseScale = 0.005;
 let t = 0;               // time offset
-let tSpeed = 0.02;      // how fast the nebula “evolves”
+let tSpeed = 0.05;      // how fast the nebula “evolves”
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
-  frameRate(30);         // aim for smooth animation
+  frameRate(60);         // aim for smooth animation
   loop(); 
 }
 
