@@ -1,6 +1,7 @@
 let noiseScale = 0.005;
 
 function setup() {
+  console.log("🔧 setup() running");
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
@@ -8,6 +9,8 @@ function setup() {
 }
 
 function draw() {
+  console.log("🎨 draw() running");
+  background(0);               // fill screen black so we see something
   loadPixels();
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
