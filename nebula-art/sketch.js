@@ -3,10 +3,13 @@ const params = {
   noiseScale: 0.002,
   tSpeed:     0.02,
   octaves:    8,
-  falloff:    0.3
+  falloff:    0.3,
+  downsample: 6
 };
 
 let t = 0;  // time offset
+
+let pg;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -14,46 +17,68 @@ function setup() {
   colorMode(HSB, 360, 100, 100);
   frameRate(30);
 
-  // initial noise settings
+  pg = createGraphics(
+    floor(windowWidth / params.downsample),
+    floor(windowHeight / params.downsample)
+  );
+  pg.pixelDensity(1);
+  pg.colorMode(HSB, 360, 100, 100);
+
   noiseDetail(params.octaves, params.falloff);
 
-  // build GUI
   const gui = new dat.GUI();
-  gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001).name('Noise Scale');
-  gui.add(params, 'tSpeed',     0.001,  0.1,  0.001).name('Time Speed');
-  gui.add(params, 'octaves',    1,      16,   1)
-     .name('Octaves')
-     .onChange(v => noiseDetail(v, params.falloff));
-  gui.add(params, 'falloff',    0,      1,    0.01)
-     .name('Falloff')
-     .onChange(v => noiseDetail(params.octaves, v));
-  loop();
+  gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001);
+  gui.add(params, 'tSpeed',     0.001,  0.1,  0.001);
+  gui.add(params, 'octaves', 1, 16, 1)
+   .name('Octaves')
+   .onChange(v => noiseDetail(v, params.falloff));
+  gui.add(params, 'falloff', 0, 1, 0.01)
+   .name('Falloff')
+   .onChange(v => noiseDetail(params.octaves, v));
+  gui.add(params, 'downsample', 1,      8,    1)
+     .name('Downsample')
+     .onChange(_ => {
+  params.downsample = constrain(params.downsample, 1, 8);
+  resizeBuffer();
+});
+}
+
+// call this whenever downsample changes or on resize
+function resizeBuffer() {
+  pg = createGraphics(
+    floor(windowWidth / params.downsample),
+    floor(windowHeight / params.downsample)
+  );
+  pg.pixelDensity(1);
+  pg.colorMode(HSB, 360, 100, 100);
 }
 
 function draw() {
-  console.log("frame", frameCount, "t=", t.toFixed(2));
-  loadPixels();
-  for (let x = 0; x < width; x++) {
-    for (let y = 0; y < height; y++) {
+  // render into pg at lower res
+  pg.loadPixels();
+  for (let x = 0; x < pg.width; x++) {
+    for (let y = 0; y < pg.height; y++) {
       let n = noise(
-        x * params.noiseScale,
-        y * params.noiseScale,
+        x * params.noiseScale * params.downsample,
+        y * params.noiseScale * params.downsample,
         t
       );
       let h = map(n, 0, 1, 200, 320),
           s = map(n, 0, 1, 50,  100),
           b = map(n, 0, 1, 20,  100);
-      let idx = (x + y * width) * 4;
-      let c = color(h, s, b);
-      pixels[idx  ] = red(c);
-      pixels[idx+1] = green(c);
-      pixels[idx+2] = blue(c);
-      pixels[idx+3] = 255;
+      let idx = (x + y * pg.width) * 4;
+      let c = pg.color(h, s, b);
+      pg.pixels[idx  ] = red(c);
+      pg.pixels[idx+1] = green(c);
+      pg.pixels[idx+2] = blue(c);
+      pg.pixels[idx+3] = 255;
     }
   }
-  updatePixels();
+  pg.updatePixels();
 
-  // advance time so the noise “clouds” shift
+  // draw the buffer stretched to full size
+  image(pg, 0, 0, width, height);
+
   t += params.tSpeed;
 }
 
@@ -65,4 +90,5 @@ function mousePressed() {
 // handle resize
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  resizeBuffer();
 }
