@@ -3,6 +3,7 @@ let noiseScale = 0.005;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
+  colorMode(HSB, 360, 100, 100);
   noLoop();
 }
 
@@ -15,7 +16,7 @@ function draw() {
       let hue = map(n, 0, 1, 200, 320);  // tweak these
       let sat = map(n, 0, 1, 50, 100);
       let bri = map(n, 0, 1, 20, 100);
-      let col = color(`hsb(${hue}, ${sat}%, ${bri}%)`);
+      let col = color(hue, sat, bri);
       pixels[(x + y * width) * 4 + 0] = red(col);
       pixels[(x + y * width) * 4 + 1] = green(col);
       pixels[(x + y * width) * 4 + 2] = blue(col);
