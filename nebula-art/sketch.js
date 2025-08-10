@@ -5,11 +5,11 @@ import { createWhispers } from './whispers.js';
 // =====================
 const params = {
   noiseScale: 0.002,
-  tSpeed:     0.02,
+  tSpeed:     0.007,
   octaves:    8,
   falloff:    0.3,
   downsample: 6,
-  palette:    'Nebula',
+  palette:    'Electric',
   newPaletteName: 'MyPalette'
 };
 
@@ -19,10 +19,11 @@ let gui, editorFolder, paletteController;
 
 // Built-in palettes (HSB triples)
 const PALETTES = {
-  Nebula:  [ [300,80,90], [230,80,90], [190,70,90], [160,70,90] ],
-  Sunset:  [ [10,95,100], [28,95,100], [45,90,95],  [300,60,90] ],
-  Aurora:  [ [100,80,90], [140,80,90], [180,75,90], [220,70,90] ],
-  Candy:   [ [330,80,95], [300,75,95], [200,75,95], [160,65,95] ]
+  Nebula:   [ [300,80,90], [230,80,90], [190,70,90], [160,70,90] ],
+  Sunset:   [ [10,95,100], [28,95,100], [45,90,95],  [300,60,90] ],
+  Aurora:   [ [100,80,90], [140,80,90], [180,75,90], [220,70,90] ],
+  Candy:    [ [330,80,95], [300,75,95], [200,75,95], [160,65,95] ],
+  Electric: [ [29,52,82],  [289,70,90], [318,0,86],  [99,32,32]  ]
 };
 const DEFAULT_NAMES = new Set(Object.keys(PALETTES));
 
