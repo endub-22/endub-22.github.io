@@ -30,12 +30,15 @@ const DEFAULT_NAMES = new Set(Object.keys(PALETTES));
 let activeStops = [];   // array of [h,s,b]
 let activeColors = [];  // array of p5.Color
 
-// =====================
-// Setup
-// =====================
+// Whispers module handle
 let whispers;
 
+// =====================
+// p5 setup/draw
+// =====================
 function setup() {
+  console.log('setup running, p5 =', typeof p5 !== 'undefined' ? p5.version : 'missing');
+
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
@@ -63,9 +66,6 @@ function setup() {
   whispers = createWhispers(gui, () => params.palette);
 }
 
-// =====================
-// Rendering
-// =====================
 function draw() {
   // render into pg at lower res
   pg.loadPixels();
@@ -104,6 +104,12 @@ function draw() {
   whispers.update(deltaTime);
   whispers.draw();
 }
+
+// expose for p5 global-mode lookup
+window.setup = setup;
+window.draw = draw;
+window.windowResized = windowResized;
+window.mousePressed = mousePressed;
 
 // =====================
 /* Palette plumbing */
@@ -154,7 +160,6 @@ function refreshPaletteDropdown() {
 // =====================
 function buildEditorGUI() {
   if (editorFolder) {
-    // try official remove, fall back to DOM removal
     gui.removeFolder?.(editorFolder);
     if (editorFolder.domElement && editorFolder.domElement.parentNode) {
       editorFolder.domElement.parentNode.removeChild(editorFolder.domElement);
@@ -220,6 +225,3 @@ function windowResized() {
 function mousePressed() {
   t = random(1000);
 }
-
-// Boot a p5 instance so it calls our window.setup/draw
-new p5();
