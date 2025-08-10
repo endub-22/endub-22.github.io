@@ -220,3 +220,6 @@ function windowResized() {
 function mousePressed() {
   t = random(1000);
 }
+
+// Boot a p5 instance so it calls our window.setup/draw
+new p5();
