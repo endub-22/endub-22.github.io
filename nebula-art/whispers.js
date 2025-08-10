@@ -4,7 +4,7 @@ export function createWhispers(gui, getPaletteName) {
   const params = {
     textEnabled:  true,
     textSize:     72,
-    textColor:    '#a4a4a4',
+    textColor:    '#ff9292',
     textShadow:   true,
     textFadeInMs: 2000,
     textHoldMs:   4500,
