@@ -21,11 +21,11 @@ export function createWhispers(gui, getPaletteName) {
   // default templates with tokens
   const DEFAULT_TEMPLATES = [
     "Breathe, {name}. The {partOfDay} is kind.",
-    "Hello from {tz}. It is {time}.",
+    "Hello from the beyond. It is {time}.",
     "It is {weekday}. Tiny steps will do.",
     "Signals from {browser} received. I see you.",
     "Relax your shoulders. Unclench your jaw.",
-    "At lat {lat}, lon {lon} the sky drifts with you.",
+    "At {tz} the sky drifts with you.",
     "Palette {palette} engaged.",
     "Drink some water. Then some more.",
     "Inhale four, exhale six. I will wait.",
