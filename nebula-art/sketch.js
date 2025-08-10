@@ -1,3 +1,5 @@
+import { createWhispers } from './whispers.js';
+
 // =====================
 // Config + State
 // =====================
@@ -24,28 +26,23 @@ const PALETTES = {
 };
 const DEFAULT_NAMES = new Set(Object.keys(PALETTES));
 
-// This is the editable list of HSB stops for the active palette
-let activeStops = [];          // array of [h,s,b]
-let activeColors = [];         // array of p5.Color computed from activeStops
+// Editable HSB stops and computed colors
+let activeStops = [];   // array of [h,s,b]
+let activeColors = [];  // array of p5.Color
 
 // =====================
 // Setup
 // =====================
+let whispers;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   pixelDensity(1);
   colorMode(HSB, 360, 100, 100);
   frameRate(30);
 
-  pg = createGraphics(
-    floor(windowWidth / params.downsample),
-    floor(windowHeight / params.downsample)
-  );
-  pg.pixelDensity(1);
-  pg.colorMode(HSB, 360, 100, 100);
-
+  resizeBuffer(); // creates pg with current downsample
   noiseDetail(params.octaves, params.falloff);
-
   setActivePaletteFromName(params.palette);
 
   // GUI
@@ -61,6 +58,9 @@ function setup() {
 
   refreshPaletteDropdown();
   buildEditorGUI();
+
+  // Whispers overlay module
+  whispers = createWhispers(gui, () => params.palette);
 }
 
 // =====================
@@ -77,7 +77,7 @@ function draw() {
         t
       );
 
-      // pick two colors and blend
+      // blend between palette stops
       const idxF = n * (activeColors.length - 1);
       const i = floor(idxF);
       const tt = idxF - i;
@@ -94,18 +94,22 @@ function draw() {
   }
   pg.updatePixels();
 
-  // draw the buffer stretched to full size
+  // stretch to full size
   image(pg, 0, 0, width, height);
 
+  // evolve time
   t += params.tSpeed;
+
+  // whisper overlay
+  whispers.update(deltaTime);
+  whispers.draw();
 }
 
 // =====================
-// Palette plumbing
+/* Palette plumbing */
 // =====================
 function setActivePaletteFromName(name) {
-  // deep copy stops
-  activeStops = PALETTES[name].map(([h,s,b]) => [h, s, b]);
+  activeStops = PALETTES[name].map(([h,s,b]) => [h, s, b]); // deep copy
   computeActiveColors();
 }
 
@@ -142,16 +146,19 @@ function refreshPaletteDropdown() {
       setActivePaletteFromName(name);
       buildEditorGUI();
     });
-  // ensure dropdown shows the current value
   if (paletteController.setValue) paletteController.setValue(params.palette);
 }
 
 // =====================
-// Editor GUI
+/* Editor GUI */
 // =====================
 function buildEditorGUI() {
   if (editorFolder) {
-    gui.removeFolder(editorFolder);
+    // try official remove, fall back to DOM removal
+    gui.removeFolder?.(editorFolder);
+    if (editorFolder.domElement && editorFolder.domElement.parentNode) {
+      editorFolder.domElement.parentNode.removeChild(editorFolder.domElement);
+    }
     editorFolder = null;
   }
   editorFolder = gui.addFolder('Palette Editor');
@@ -168,7 +175,7 @@ function buildEditorGUI() {
       const last = activeStops[activeStops.length - 1];
       activeStops.push([last[0], last[1], last[2]]);
       computeActiveColors();
-      buildEditorGUI(); // rebuild to show new controllers
+      buildEditorGUI();
     },
     removeStop: () => {
       if (activeStops.length <= 2) return;
@@ -194,13 +201,12 @@ function buildEditorGUI() {
 }
 
 // =====================
-// Resize helpers
+/* Resize helpers */
 // =====================
 function resizeBuffer() {
-  pg = createGraphics(
-    floor(windowWidth / params.downsample),
-    floor(windowHeight / params.downsample)
-  );
+  const w = Math.max(1, Math.floor(windowWidth  / params.downsample));
+  const h = Math.max(1, Math.floor(windowHeight / params.downsample));
+  pg = createGraphics(w, h);
   pg.pixelDensity(1);
   pg.colorMode(HSB, 360, 100, 100);
 }
