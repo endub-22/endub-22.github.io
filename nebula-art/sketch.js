@@ -4,12 +4,26 @@ const params = {
   tSpeed:     0.02,
   octaves:    8,
   falloff:    0.3,
-  downsample: 6
+  downsample: 6,
+  palette:    'Nebula' // default
 };
 
-let t = 0;  // time offset
+let t = 0;      // time offset
+let pg;         // offscreen buffer
 
-let pg;
+// Palette definitions (HSB triples)
+const PALETTES = {
+  Nebula:  [ [300,80,90], [230,80,90], [190,70,90], [160,70,90] ],
+  Sunset:  [ [10,95,100], [28,95,100], [45,90,95],  [300,60,90] ],
+  Aurora:  [ [100,80,90], [140,80,90], [180,75,90], [220,70,90] ],
+  Candy:   [ [330,80,95], [300,75,95], [200,75,95], [160,65,95] ]
+};
+
+let activePalette = []; // array of p5.Color objects
+
+function buildActivePalette(name) {
+  activePalette = PALETTES[name].map(([h,s,b]) => color(h, s, b));
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -25,22 +39,24 @@ function setup() {
   pg.colorMode(HSB, 360, 100, 100);
 
   noiseDetail(params.octaves, params.falloff);
+  buildActivePalette(params.palette);
 
+  // GUI
   const gui = new dat.GUI();
-  gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001);
-  gui.add(params, 'tSpeed',     0.001,  0.1,  0.001);
-  gui.add(params, 'octaves', 1, 16, 1)
-   .name('Octaves')
-   .onChange(v => noiseDetail(v, params.falloff));
-  gui.add(params, 'falloff', 0, 1, 0.01)
-   .name('Falloff')
-   .onChange(v => noiseDetail(params.octaves, v));
+  gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001).name('Noise Scale');
+  gui.add(params, 'tSpeed',     0.001,  0.1,  0.001).name('Time Speed');
+  gui.add(params, 'octaves',    1,      16,   1)
+     .name('Octaves')
+     .onChange(v => noiseDetail(v, params.falloff));
+  gui.add(params, 'falloff',    0,      1,    0.01)
+     .name('Falloff')
+     .onChange(v => noiseDetail(params.octaves, v));
   gui.add(params, 'downsample', 1,      8,    1)
      .name('Downsample')
-     .onChange(_ => {
-  params.downsample = constrain(params.downsample, 1, 8);
-  resizeBuffer();
-});
+     .onChange(() => resizeBuffer());
+  gui.add(params, 'palette', Object.keys(PALETTES))
+     .name('Palette')
+     .onChange(name => buildActivePalette(name));
 }
 
 // call this whenever downsample changes or on resize
@@ -63,15 +79,28 @@ function draw() {
         y * params.noiseScale * params.downsample,
         t
       );
-      let h = map(n, 0, 1, 200, 320),
-          s = map(n, 0, 1, 50,  100),
-          b = map(n, 0, 1, 20,  100);
-      let idx = (x + y * pg.width) * 4;
-      let c = pg.color(h, s, b);
-      pg.pixels[idx  ] = red(c);
-      pg.pixels[idx+1] = green(c);
-      pg.pixels[idx+2] = blue(c);
-      pg.pixels[idx+3] = 255;
+
+      // palette index and blend factor
+      let idxF = n * (activePalette.length - 1);
+      let i    = floor(idxF);
+      let tt   = idxF - i;
+
+      // clamp upper index
+      let c1 = activePalette[i];
+      let c2 = activePalette[min(i + 1, activePalette.length - 1)];
+
+      // smooth color between stops
+      let col = lerpColor(c1, c2, tt);
+
+      // optional extra shading for depth
+      // let shade = map(n, 0, 1, 0.7, 1.0);
+      // col = color(red(col)*shade, green(col)*shade, blue(col)*shade); // if using RGB mode
+
+      let p = (x + y * pg.width) * 4;
+      pg.pixels[p    ] = red(col);
+      pg.pixels[p + 1] = green(col);
+      pg.pixels[p + 2] = blue(col);
+      pg.pixels[p + 3] = 255;
     }
   }
   pg.updatePixels();
@@ -82,12 +111,12 @@ function draw() {
   t += params.tSpeed;
 }
 
-// regenerate pattern on click
+// click to jump time
 function mousePressed() {
   t = random(1000);
 }
 
-// handle resize
+// keep buffer in sync with window size
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   resizeBuffer();
