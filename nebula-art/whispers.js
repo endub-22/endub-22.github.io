@@ -111,7 +111,6 @@ export function createWhispers(gui, getPaletteName) {
       text(state.current, x, y);
       pop();
     },
-    // optional: allow main to add or replace templates
     setTemplates(list) {
       state.templates = Array.isArray(list) && list.length ? list.slice() : [...DEFAULT_TEMPLATES];
       nextMessage();
@@ -123,7 +122,6 @@ export function createWhispers(gui, getPaletteName) {
 
   // ---------- helpers ----------
   function nextMessage() {
-    // personalize and start fade sequence
     let i;
     if (state.templates.length === 0) state.templates = [...DEFAULT_TEMPLATES];
     do { i = Math.floor(Math.random() * state.templates.length); } while (i === state.lastIndex && state.templates.length > 1);
@@ -166,6 +164,7 @@ export function createWhispers(gui, getPaletteName) {
     if (ua.includes('Safari')) return 'Safari';
     return 'a browser';
   }
+
   function nowBits() {
     const d = new Date();
     return {
@@ -174,5 +173,7 @@ export function createWhispers(gui, getPaletteName) {
       partOfDay: (h => h<5?'night':h<12?'morning':h<18?'afternoon':'evening')(d.getHours())
     };
   }
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  // HOISTED version fixes the error
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 }
