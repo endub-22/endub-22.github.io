@@ -2,15 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Procedural Nebula</title>
-    <!-- p5.js CDN -->
+  <title>Nebula + Whispers</title>
+
+  <!-- Load p5 exactly once -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
-  <!-- dat.GUI CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
-  <script type="module" src="sketch.js"></script>
+
+  <!-- Your sketch runs as a module -->
+  <script type="module" src="./sketch.js"></script>
+
   <style>
-    body { margin:0; overflow:hidden; background:black; }
+    html,body{margin:0;height:100%;background:black;overflow:hidden}
+    canvas{display:block}
   </style>
 </head>
 <body></body>
 </html>
+
