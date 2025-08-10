@@ -1,4 +1,4 @@
-// whispers.js - a tiny overlay-text module with fades + personalization
+// whispers.js - overlay text with fades + personalization + font + positioning
 export function createWhispers(gui, getPaletteName) {
   // params local to this module
   const params = {
@@ -9,7 +9,13 @@ export function createWhispers(gui, getPaletteName) {
     textFadeInMs: 2000,
     textHoldMs:   4500,
     textFadeOutMs:2000,
-    useGeolocation: false
+    useGeolocation: false,
+
+    // new controls
+    textPosition: 'Center',           // 'Center' | 'Bottom' | 'Top'
+    textFont:     'Inter',            // must exist via CSS or system
+    textStyle:    'Normal',           // 'Normal' | 'Italic' | 'Bold'
+    textBoxWidth: 0.8                 // fraction of canvas width
   };
 
   // default templates with tokens
@@ -56,6 +62,20 @@ export function createWhispers(gui, getPaletteName) {
   folder.add(params, 'useGeolocation').name('Use Geolocation')
     .onChange(v => { if (v) requestGeo(); });
 
+  // new controls
+  folder.add(params, 'textPosition', ['Center','Bottom','Top']).name('Position');
+  folder.add(params, 'textFont', [
+    'Inter',
+    'Playfair Display',
+    'Georgia',
+    'Times New Roman',
+    'Verdana',
+    'Courier New',
+    'sans-serif'
+  ]).name('Font');
+  folder.add(params, 'textStyle', ['Normal','Italic','Bold']).name('Style');
+  folder.add(params, 'textBoxWidth', 0.3, 1.0, 0.05).name('Width %');
+
   const actions = {
     setName: () => {
       const v = prompt('What should I call you?', ctx.name || '');
@@ -93,22 +113,51 @@ export function createWhispers(gui, getPaletteName) {
         if (state.elapsed >= fo) { nextMessage(); return; }
       }
 
-      // render bottom-center
+      // font + style
+      const styleMap = { Normal: NORMAL, Italic: ITALIC, Bold: BOLD };
+      textFont(params.textFont);
+      textStyle(styleMap[params.textStyle] || NORMAL);
+      textSize(params.textSize);
+      textLeading(params.textSize * 1.2);
+      textWrap(WORD);
+
+      // layout
+      const pad = 40;
+      const boxW = clamp(width * params.textBoxWidth, 80, width - pad * 2);
+      let boxH, rectX, rectY, hAlign, vAlign;
+
+      if (params.textPosition === 'Center') {
+        boxH = height * 0.5;
+        rectX = (width - boxW) / 2;
+        rectY = (height - boxH) / 2;
+        hAlign = CENTER; vAlign = CENTER;
+      } else if (params.textPosition === 'Top') {
+        boxH = height * 0.25;
+        rectX = (width - boxW) / 2;
+        rectY = pad;
+        hAlign = CENTER; vAlign = TOP;
+      } else { // Bottom
+        boxH = height * 0.25;
+        rectX = (width - boxW) / 2;
+        rectY = height - pad - boxH;
+        hAlign = CENTER; vAlign = BOTTOM;
+      }
+
+      textAlign(hAlign, vAlign);
+
+      // parse color once after switching to RGB space
       const c = color(params.textColor);
       const r = red(c), g = green(c), b = blue(c);
-      const pad = 40, x = width / 2, y = height - pad;
 
       push();
-      textAlign(CENTER, BOTTOM);
-      textSize(params.textSize);
       colorMode(RGB, 255);
 
       if (params.textShadow) {
         fill(0, 0, 0, 160 * a);
-        text(state.current, x + 2, y + 2);
+        text(state.current, rectX + 2, rectY + 2, boxW, boxH);
       }
       fill(r, g, b, 255 * a);
-      text(state.current, x, y);
+      text(state.current, rectX, rectY, boxW, boxH);
       pop();
     },
     setTemplates(list) {
@@ -174,6 +223,6 @@ export function createWhispers(gui, getPaletteName) {
     };
   }
 
-  // HOISTED version fixes the error
+  // hoisted so it is safe before first call
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 }
