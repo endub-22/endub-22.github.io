@@ -13,7 +13,7 @@ export function createWhispers(gui, getPaletteName) {
 
     // new controls
     textPosition: 'Center',           // 'Center' | 'Bottom' | 'Top'
-    textFont:     'Inter',            // must exist via CSS or system
+    textFont:     'Kaushan Script',   // must exist via CSS or system
     textStyle:    'Normal',           // 'Normal' | 'Italic' | 'Bold'
     textBoxWidth: 0.8                 // fraction of canvas width
   };
@@ -66,12 +66,17 @@ export function createWhispers(gui, getPaletteName) {
   folder.add(params, 'textPosition', ['Center','Bottom','Top']).name('Position');
   folder.add(params, 'textFont', [
     'Inter',
-    'Playfair Display',
-    'Georgia',
-    'Times New Roman',
-    'Verdana',
-    'Courier New',
-    'sans-serif'
+  'Playfair Display',
+  'Lugrasimo',
+  'Charm',
+  'Homemade Apple',
+  'Princess Sofia',
+  'Kaushan Script',
+  'Georgia',
+  'Times New Roman',
+  'Verdana',
+  'Courier New',
+  'sans-serif'
   ]).name('Font');
   folder.add(params, 'textStyle', ['Normal','Italic','Bold']).name('Style');
   folder.add(params, 'textBoxWidth', 0.3, 1.0, 0.05).name('Width %');
