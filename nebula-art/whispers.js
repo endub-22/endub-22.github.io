@@ -3,8 +3,8 @@ export function createWhispers(gui, getPaletteName) {
   // params local to this module
   const params = {
     textEnabled:  true,
-    textSize:     28,
-    textColor:    '#FFFFFF',
+    textSize:     72,
+    textColor:    '#a4a4a4',
     textShadow:   true,
     textFadeInMs: 2000,
     textHoldMs:   4500,
