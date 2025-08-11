@@ -118,6 +118,9 @@ vig.add(vignette, 'y', 0, 1, 0.01).name('Center Y').onChange(buildVignette);
 // build once at start
 buildVignette();
 
+  // show GUI only if ?gui=1 is in the URL
+const showFromQuery = new URLSearchParams(location.search).get('gui') === '1';
+if (!showFromQuery) minimizeGUI({ collapse: true, hide: true });
 }
 
 function draw() {
@@ -290,3 +293,26 @@ function windowResized() {
 function mousePressed() {
   t = random(1000);
 }
+
+let guiHidden = false;
+
+function minimizeGUI({ collapse = true, hide = true } = {}) {
+  if (!gui) return;
+  if (collapse) {
+    // close all folders and the root panel
+    for (const f of Object.values(gui.__folders || {})) f.close();
+    gui.close();
+  }
+  if (hide) {
+    gui.domElement.style.display = 'none';
+    guiHidden = true;
+  }
+}
+
+function keyPressed() {
+  if (key === 'g' || key === 'G') {
+    guiHidden = !guiHidden;
+    gui.domElement.style.display = guiHidden ? 'none' : '';
+  }
+}
+window.keyPressed = keyPressed; // expose for p5
