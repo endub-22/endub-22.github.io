@@ -32,7 +32,7 @@ export function createWhispers(gui, getPaletteName) {
     "The sky inside you is wider than worry.",
     "A fresh breath is a small restart.",
     "I keep time with your calm, {name}.",
-    "{partOfDay} belongs to soft decisions.",
+    "The {partOfDay} belongs to soft decisions.",
     "Let the {partOfDay} carry you, not the other way around.",
     "The colors are thinking about you.",
     "Even nebulas rest. You can too.",
