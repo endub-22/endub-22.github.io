@@ -90,7 +90,7 @@ export function createWhispers(gui, getPaletteName) {
   };
   folder.add(actions, 'setName').name('Set Viewer Name');
   folder.add(actions, 'nextNow').name('Next Message Now');
-  folder.open();
+  folder.close();  // start closed
 
   // kick off the first line
   nextMessage();
