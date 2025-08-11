@@ -10,26 +10,35 @@ export function createWhispers(gui, getPaletteName) {
     textHoldMs:   4500,
     textFadeOutMs:2000,
     useGeolocation: false,
-
-    // new controls
     textPosition: 'Center',           // 'Center' | 'Bottom' | 'Top'
     textFont:     'Kaushan Script',   // must exist via CSS or system
     textStyle:    'Normal',           // 'Normal' | 'Italic' | 'Bold'
     textBoxWidth: 0.8                 // fraction of canvas width
   };
 
-  // default templates with tokens
+  // default templates with tokens - added new lines
   const DEFAULT_TEMPLATES = [
     "Breathe, {name}. The {partOfDay} is kind.",
-    "Hello from the beyond. It is {time}.",
+    "Hello from {tz}. It is {time}.",
     "It is {weekday}. Tiny steps will do.",
     "Signals from {browser} received. I see you.",
     "Relax your shoulders. Unclench your jaw.",
-    "At {tz} the sky drifts with you.",
+    "At lat {lat}, lon {lon} the sky drifts with you.",
     "Palette {palette} engaged.",
     "Drink some water. Then some more.",
     "Inhale four, exhale six. I will wait.",
-    "You are here, and that is enough."
+    "You are here, and that is enough.",
+    // new ones
+    "Notice one sound. Then another. Let them pass.",
+    "The sky inside you is wider than worry.",
+    "A fresh breath is a small restart.",
+    "I keep time with your calm, {name}.",
+    "Tonight belongs to soft decisions.",
+    "Let the {partOfDay} carry you, not the other way around.",
+    "The colors are thinking about you.",
+    "Even nebulas rest. You can too.",
+    "You do not have to hurry right now.",
+    "A gentle focus will find you."
   ];
 
   // personalization context
@@ -54,7 +63,7 @@ export function createWhispers(gui, getPaletteName) {
   const folder = gui.addFolder('Text');
   folder.add(params, 'textEnabled').name('Show Text');
   folder.addColor(params, 'textColor').name('Text Color');
-  folder.add(params, 'textSize', 14, 72, 1).name('Text Size');
+  folder.add(params, 'textSize', 14, 84, 1).name('Text Size');
   folder.add(params, 'textFadeInMs', 300, 5000, 50).name('Fade In ms');
   folder.add(params, 'textHoldMs',   500, 8000, 50).name('Hold ms');
   folder.add(params, 'textFadeOutMs',300, 5000, 50).name('Fade Out ms');
@@ -62,21 +71,21 @@ export function createWhispers(gui, getPaletteName) {
   folder.add(params, 'useGeolocation').name('Use Geolocation')
     .onChange(v => { if (v) requestGeo(); });
 
-  // new controls
+  // fonts and layout
   folder.add(params, 'textPosition', ['Center','Bottom','Top']).name('Position');
   folder.add(params, 'textFont', [
     'Inter',
-  'Playfair Display',
-  'Lugrasimo',
-  'Charm',
-  'Homemade Apple',
-  'Princess Sofia',
-  'Kaushan Script',
-  'Georgia',
-  'Times New Roman',
-  'Verdana',
-  'Courier New',
-  'sans-serif'
+    'Playfair Display',
+    'Lugrasimo',
+    'Charm',
+    'Homemade Apple',
+    'Princess Sofia',
+    'Kaushan Script',
+    'Georgia',
+    'Times New Roman',
+    'Verdana',
+    'Courier New',
+    'sans-serif'
   ]).name('Font');
   folder.add(params, 'textStyle', ['Normal','Italic','Bold']).name('Style');
   folder.add(params, 'textBoxWidth', 0.3, 1.0, 0.05).name('Width %');
@@ -90,7 +99,7 @@ export function createWhispers(gui, getPaletteName) {
   };
   folder.add(actions, 'setName').name('Set Viewer Name');
   folder.add(actions, 'nextNow').name('Next Message Now');
-  folder.close();  // start closed
+  folder.close(); // start collapsed
 
   // kick off the first line
   nextMessage();
@@ -150,15 +159,13 @@ export function createWhispers(gui, getPaletteName) {
 
       textAlign(hAlign, vAlign);
 
-      // parse color once after switching to RGB space
       const c = color(params.textColor);
       const r = red(c), g = green(c), b = blue(c);
 
       push();
       colorMode(RGB, 255);
-
       if (params.textShadow) {
-        fill(0, 0, 0, 160 * a);
+        fill(0, 0, 0, 200 * a);
         text(state.current, rectX + 2, rectY + 2, boxW, boxH);
       }
       fill(r, g, b, 255 * a);
