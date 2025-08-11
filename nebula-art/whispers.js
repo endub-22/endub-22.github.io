@@ -19,26 +19,25 @@ export function createWhispers(gui, getPaletteName) {
   // default templates with tokens - added new lines
   const DEFAULT_TEMPLATES = [
     "Breathe, {name}. The {partOfDay} is kind.",
-    "Hello from {tz}. It is {time}.",
+    "Hello from the beyond. It is {time}.",
     "It is {weekday}. Tiny steps will do.",
     "Signals from {browser} received. I see you.",
     "Relax your shoulders. Unclench your jaw.",
-    "At lat {lat}, lon {lon} the sky drifts with you.",
-    "Palette {palette} engaged.",
+    "At lat {tz} the sky drifts with you.",
+    "Palette {palette} engaged and swirling.",
     "Drink some water. Then some more.",
     "Inhale four, exhale six. I will wait.",
     "You are here, and that is enough.",
-    // new ones
     "Notice one sound. Then another. Let them pass.",
     "The sky inside you is wider than worry.",
     "A fresh breath is a small restart.",
     "I keep time with your calm, {name}.",
-    "Tonight belongs to soft decisions.",
+    "{partOfDay} belongs to soft decisions.",
     "Let the {partOfDay} carry you, not the other way around.",
     "The colors are thinking about you.",
     "Even nebulas rest. You can too.",
     "You do not have to hurry right now.",
-    "A gentle focus will find you."
+    "A gentle focus finds you."
   ];
 
   // personalization context
