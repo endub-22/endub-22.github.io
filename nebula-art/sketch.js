@@ -1,5 +1,45 @@
 import { createWhispers } from './whispers.js';
 
+// Vignette settings
+const vignette = {
+  enabled:   true,
+  overText:  true,   // draw above whispers, set false to leave text untouched
+  strength:  0.6,    // 0..1, alpha at edges
+  radius:    0.6,    // 0..1.2, size of clear center
+  softness:  0.5,    // 0.05..1, thickness of the fade
+  x:         0.5,    // 0..1, center X as fraction of width
+  y:         0.5     // 0..1, center Y as fraction of height
+};
+let vignettePG;       // offscreen gradient
+
+function buildVignette() {
+  vignettePG = createGraphics(width, height);
+  vignettePG.pixelDensity(1);
+  const ctx = vignettePG.drawingContext;
+  // clear
+  ctx.clearRect(0, 0, vignettePG.width, vignettePG.height);
+
+  const cx = vignette.x * vignettePG.width;
+  const cy = vignette.y * vignettePG.height;
+
+  // outer radius reaches corners so the black goes to edges
+  const maxR = 0.5 * Math.hypot(vignettePG.width, vignettePG.height);
+
+  // transparent center radius
+  const innerR = Math.min(vignettePG.width, vignettePG.height) * 0.5 * vignette.radius;
+
+  // thickness of the feathered ring
+  const ring = Math.max(10, maxR * vignette.softness);
+  const outerR = Math.min(maxR, innerR + ring);
+
+  const g = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
+  g.addColorStop(0, 'rgba(0,0,0,0)');
+  g.addColorStop(1, `rgba(0,0,0,${vignette.strength})`);
+
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, vignettePG.width, vignettePG.height);
+}
+
 // =====================
 // Config + State
 // =====================
@@ -65,6 +105,19 @@ function setup() {
 
   // Whispers overlay module
   whispers = createWhispers(gui, () => params.palette);
+  
+  const vig = gui.addFolder('Vignette');
+vig.add(vignette, 'enabled').name('Enabled');
+vig.add(vignette, 'overText').name('Affects Text');
+vig.add(vignette, 'strength', 0, 1, 0.01).name('Edge Strength').onChange(buildVignette);
+vig.add(vignette, 'radius',   0.2, 1.2, 0.01).name('Clear Radius').onChange(buildVignette);
+vig.add(vignette, 'softness', 0.05, 1, 0.01).name('Softness').onChange(buildVignette);
+vig.add(vignette, 'x', 0, 1, 0.01).name('Center X').onChange(buildVignette);
+vig.add(vignette, 'y', 0, 1, 0.01).name('Center Y').onChange(buildVignette);
+
+// build once at start
+buildVignette();
+
 }
 
 function draw() {
@@ -78,7 +131,6 @@ function draw() {
         t
       );
 
-      // blend between palette stops
       const idxF = n * (activeColors.length - 1);
       const i = floor(idxF);
       const tt = idxF - i;
@@ -95,16 +147,27 @@ function draw() {
   }
   pg.updatePixels();
 
-  // stretch to full size
+  // paint nebula to main canvas
   image(pg, 0, 0, width, height);
+
+  // optional vignette under text
+  if (vignette.enabled && !vignette.overText) {
+    image(vignettePG, 0, 0, width, height);
+  }
+
+  // whispers overlay once
+  whispers.update(deltaTime);
+  whispers.draw();
+
+  // optional vignette over text
+  if (vignette.enabled && vignette.overText) {
+    image(vignettePG, 0, 0, width, height);
+  }
 
   // evolve time
   t += params.tSpeed;
-
-  // whisper overlay
-  whispers.update(deltaTime);
-  whispers.draw();
 }
+
 
 // expose for p5 global-mode lookup
 window.setup = setup;
@@ -220,6 +283,7 @@ function resizeBuffer() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   resizeBuffer();
+  buildVignette();
 }
 
 // Click to jump time
