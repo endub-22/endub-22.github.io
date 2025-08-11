@@ -5,7 +5,7 @@ import { createWhispers } from './whispers.js';
 // =====================
 const vignette = {
   enabled:   true,
-  overText:  true,   // draw above whispers, set false to leave text untouched
+  overText:  false,   // draw above whispers, set false to leave text untouched
   strength:  0.6,    // 0..1, alpha at edges
   radius:    0.6,    // 0..1.2, size of clear center
   softness:  0.5,    // 0.05..1, thickness of the fade
