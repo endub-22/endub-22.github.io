@@ -1,27 +1,20 @@
-/* main.js - Mode switch between Whispers and Story */
+/* main.js - keep sketch running; center Story UI */
 (function () {
   "use strict";
 
   const $switch = document.getElementById("mode-switch");
   const $storyUI = document.getElementById("story-ui");
-  const $canvasHolder = document.getElementById("sketch-container");
 
   let storyEngine = null;
 
-  function tryNoLoop(){ try { typeof noLoop === "function" && noLoop(); } catch {} }
-  function tryLoop(){   try { typeof loop   === "function" && loop();   } catch {} }
-
   function startWhispers() {
     $storyUI.hidden = true;
-    $canvasHolder.style.pointerEvents = "auto";
-    tryLoop();  // resume p5 global draw if present
+    // sketch keeps running underneath
   }
 
   function startStory() {
-    $canvasHolder.style.pointerEvents = "none";
-    tryNoLoop(); // pause p5 global draw if present
     $storyUI.hidden = false;
-
+    // sketch keeps running underneath
     if (!storyEngine) {
       storyEngine = window.NebulaStory.quickBind({
         titleId: "story-title",
@@ -53,7 +46,7 @@
     setMode(btn.dataset.mode);
   });
 
-  // Hotkey T to toggle
+  // Hotkey: T toggles modes
   window.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === "t" && !e.altKey && !e.ctrlKey && !e.metaKey) {
       const current = localStorage.getItem("nebula_mode") || "whispers";
