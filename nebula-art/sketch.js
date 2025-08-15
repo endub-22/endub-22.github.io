@@ -37,7 +37,7 @@ function buildVignette() {
 // Config + State
 // =====================
 const params = {
-  mode:       'Whispers',
+  mode:       'Story',
   noiseScale: 0.002,
   tSpeed:     0.007,
   octaves:    8,
