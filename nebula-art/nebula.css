@@ -65,6 +65,10 @@ body {
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   transition: transform .12s ease, box-shadow .12s ease, background .3s ease;
   cursor:pointer; user-select:none; min-height: 40px; min-width: 44px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+  font-family: inherit;
 }
 .btn::before{
   content:""; position:absolute; inset:-1px; border-radius:12px; padding:1px;
@@ -86,7 +90,6 @@ body {
 .choice.btn{
   background: linear-gradient(#0000,#0000), var(--panel);
   border:1px solid #ffffff25;
-  font-family: inherit;  
 }
 .choice.btn.btn--A{
   --accentA1:#ff9bd6; --accentA2:#c084fc; --accentB1:#ff9bd6; --accentB2:#c084fc;
@@ -98,22 +101,7 @@ body {
   box-shadow: 0 0 0 3px rgba(255,255,255,.08), 0 10px 30px rgba(120,180,255,.28);
 }
 
-/* Replay button */
-#story-choices .again{
-  padding:.6rem .9rem; border-radius:12px; border:1px solid #ffffff22;
-  background: linear-gradient(#0000,#0000), rgba(255,255,255,.05);
-  color:#fff; cursor:pointer;
-}
-
 /* Mode switch tabs */
-
-#mode-switch button{ font-weight: 600; font-size: 14px; line-height: 1; font-family: inherit; }
-
-#mode-switch button{
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 1;
-}
 
 #mode-switch button.active{
   background: linear-gradient(#0000,#0000), rgba(255,255,255,.10);
