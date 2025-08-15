@@ -1,5 +1,9 @@
 import { createWhispers, TEXT_DEFAULTS } from './whispers.js';
 
+if (typeof window.dat === 'undefined' || typeof window.dat.GUI === 'undefined') {
+  throw new Error('dat.GUI not loaded');
+}
+
 // =====================
 // Vignette settings
 // =====================
