@@ -90,3 +90,19 @@
   background: linear-gradient(#0000,#0000), rgba(255,255,255,.10);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 6px 18px rgba(90,140,255,.22);
 }
+
+/* Click ripple for .btn */
+.btn .ripple{
+  position:absolute;
+  border-radius:50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #ffffffaa 0%, #ffffff44 40%, #ffffff00 70%);
+  width:10px; height:10px;
+  pointer-events:none; opacity:.8;
+  animation: ripple .5s ease-out forwards;
+}
+
+@keyframes ripple {
+  to { opacity: 0; width: 240px; height: 240px; }
+}
+
