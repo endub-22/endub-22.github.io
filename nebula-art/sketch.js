@@ -1,4 +1,4 @@
-import { createWhispers } from './whispers.js';
+import { createWhispers, TEXT_DEFAULTS } from './whispers.js';
 
 // =====================
 // Vignette settings
@@ -136,7 +136,7 @@ function setup() {
 
   // Whispers overlay module
   whispers = createWhispers(gui, () => params.palette);
-  storyEngine = NebulaStory.quickBind({});
+  storyEngine = NebulaStory.quickBind({ textDefaults: TEXT_DEFAULTS });
   handleMode();
 
   // Hide GUI by default unless ?gui=1

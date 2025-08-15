@@ -215,7 +215,8 @@
       choicesId = "story-choices",
       endingIdEl = "story-ending",
       pathId = "story-path",
-      onChoiceSound // optional function(key) to play SFX
+      onChoiceSound, // optional function(key) to play SFX
+      textDefaults  // optional styling overrides
     } = cfg || {};
 
     const $title = document.getElementById(titleId);
@@ -223,6 +224,33 @@
     const $choices = document.getElementById(choicesId);
     const $ending = document.getElementById(endingIdEl);
     const $path = document.getElementById(pathId);
+    const $container = $title ? $title.parentElement : null;
+
+    // apply text defaults if provided
+    if (textDefaults) {
+      const { textFont, textSize, textColor, textStyle, textShadow, textBoxWidth } = textDefaults;
+      const targets = [$title, $body, $choices, $ending, $path];
+      targets.forEach(el => {
+        if (!el) return;
+        if (textFont) el.style.fontFamily = textFont;
+        if (textSize) el.style.fontSize = textSize + 'px';
+        if (textColor) el.style.color = textColor;
+        if (textStyle === 'Italic') {
+          el.style.fontStyle = 'italic';
+          el.style.fontWeight = 'normal';
+        } else if (textStyle === 'Bold') {
+          el.style.fontWeight = 'bold';
+          el.style.fontStyle = 'normal';
+        } else {
+          el.style.fontStyle = 'normal';
+          el.style.fontWeight = 'normal';
+        }
+        el.style.textShadow = textShadow ? '2px 2px 4px rgba(0,0,0,0.6)' : 'none';
+      });
+      if ($container && textBoxWidth) {
+        $container.style.maxWidth = (textBoxWidth * 100) + '%';
+      }
+    }
 
     const engine = createStoryEngine({
       onRenderNode: (node, step, path) => {

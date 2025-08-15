@@ -1,20 +1,24 @@
 // whispers.js - overlay text with fades + personalization + font + positioning
+
+// exported defaults so other modules can match styling
+export const TEXT_DEFAULTS = {
+  textEnabled:  true,
+  textSize:     72,
+  textColor:    '#ff9292',
+  textShadow:   true,
+  textFadeInMs: 2000,
+  textHoldMs:   4500,
+  textFadeOutMs:2000,
+  useGeolocation: false,
+  textPosition: 'Center',           // 'Center' | 'Bottom' | 'Top'
+  textFont:     'Kaushan Script',   // must exist via CSS or system
+  textStyle:    'Normal',           // 'Normal' | 'Italic' | 'Bold'
+  textBoxWidth: 0.8                 // fraction of canvas width
+};
+
 export function createWhispers(gui, getPaletteName) {
   // params local to this module
-  const params = {
-    textEnabled:  true,
-    textSize:     72,
-    textColor:    '#ff9292',
-    textShadow:   true,
-    textFadeInMs: 2000,
-    textHoldMs:   4500,
-    textFadeOutMs:2000,
-    useGeolocation: false,
-    textPosition: 'Center',           // 'Center' | 'Bottom' | 'Top'
-    textFont:     'Kaushan Script',   // must exist via CSS or system
-    textStyle:    'Normal',           // 'Normal' | 'Italic' | 'Bold'
-    textBoxWidth: 0.8                 // fraction of canvas width
-  };
+  const params = { ...TEXT_DEFAULTS };
 
   // default templates with tokens - added new lines
   const DEFAULT_TEMPLATES = [
