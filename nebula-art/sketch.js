@@ -37,6 +37,7 @@ function buildVignette() {
 // Config + State
 // =====================
 const params = {
+  mode:       'Whispers',
   noiseScale: 0.002,
   tSpeed:     0.007,
   octaves:    8,
@@ -51,6 +52,16 @@ let pg;
 let gui, editorFolder, paletteController;
 let guiHidden = false;
 
+let whispers;
+let storyEngine;
+let whispersEnabled = true;
+
+function handleMode() {
+  const isWhispers = params.mode === 'Whispers';
+  const el = document.getElementById('story-container');
+  if (el) el.style.display = isWhispers ? 'none' : 'block';
+  whispersEnabled = isWhispers;
+}
 // Built-in palettes (HSB triples)
 const BASE_PALETTES = {
   Nebula:   [ [300,80,90], [230,80,90], [190,70,90], [160,70,90] ],
@@ -75,7 +86,6 @@ const STORAGE_KEY_PALETTES = 'nebula.palettes.v1';
 // =====================
 // p5 setup/draw
 // =====================
-let whispers;
 
 function setup() {
   console.log('setup running');
@@ -100,6 +110,7 @@ function setup() {
 
   // GUI
   gui = new dat.GUI();
+  gui.add(params, 'mode', ['Whispers','Story']).name('Mode').onChange(handleMode);
   gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001).name('Noise Scale').onChange(saveParams);
   gui.add(params, 'tSpeed',     0.001,  0.1,  0.001).name('Time Speed').onChange(saveParams);
   gui.add(params, 'octaves',    1,      16,   1).name('Octaves')
@@ -125,6 +136,8 @@ function setup() {
 
   // Whispers overlay module
   whispers = createWhispers(gui, () => params.palette);
+  storyEngine = NebulaStory.quickBind({});
+  handleMode();
 
   // Hide GUI by default unless ?gui=1
   const showFromQuery = new URLSearchParams(location.search).get('gui') === '1';
@@ -172,8 +185,10 @@ function draw() {
   }
 
   // whispers overlay once
-  whispers.update(deltaTime);
-  whispers.draw();
+  if (whispersEnabled) {
+    whispers.update(deltaTime);
+    whispers.draw();
+  }
 
   // optional vignette over text
   if (vignette.enabled && vignette.overText) {
