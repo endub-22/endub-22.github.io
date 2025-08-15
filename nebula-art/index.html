@@ -137,7 +137,29 @@
 /* Fallback if "composes" unsupported */
 #story-choices .again.btn, #mode-switch button.btn { /* no-op, keeps classes happy */ }
 
+    .btn .ripple{
+  position:absolute; border-radius:50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #ffffffaa 0%, #ffffff44 40%, #ffffff00 70%);
+  width:10px; height:10px; pointer-events:none; opacity:.8;
+  animation: ripple .5s ease-out forwards;
+}
+@keyframes ripple { to { opacity:0; width:240px; height:240px; } }
   </style>
+  <script>
+// attach once after DOM ready
+document.addEventListener("click", e => {
+  const btn = e.target.closest(".btn");
+  if (!btn) return;
+  const r = document.createElement("span");
+  r.className = "ripple";
+  const rect = btn.getBoundingClientRect();
+  r.style.left = (e.clientX - rect.left) + "px";
+  r.style.top  = (e.clientY - rect.top)  + "px";
+  btn.appendChild(r);
+  r.addEventListener("animationend", () => r.remove());
+}, { capture:true });
+</script>
 </head>
 <body>
   <div id="story-container">
@@ -145,6 +167,11 @@
     <div id="story-body"></div>
     <div id="story-choices"></div>
     <div id="story-ending"></div>
+    <div id="mode-switch" role="group" aria-label="Mode switch">
+  <button class="btn active" data-mode="whispers" type="button">Whispers</button>
+  <button class="btn" data-mode="story" type="button">Story</button>
+</div>
+
   </div>
 </body>
 </html>
