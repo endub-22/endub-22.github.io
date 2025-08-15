@@ -51,11 +51,11 @@
   // Hotkey: T toggles modes
   window.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === "t" && !e.altKey && !e.ctrlKey && !e.metaKey) {
-      const current = localStorage.getItem("nebula_mode") || "whispers";
+      const current = localStorage.getItem("nebula_mode") || "story";
       setMode(current === "whispers" ? "story" : "whispers");
     }
   });
 
-  const preferred = localStorage.getItem("nebula_mode") || "whispers";
+  const preferred = localStorage.getItem("nebula_mode") || "story";
   setMode(preferred);
 })();
