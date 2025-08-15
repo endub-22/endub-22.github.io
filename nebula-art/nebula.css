@@ -7,6 +7,9 @@
   --accentB1:#22d3ee;  /* B = listening/patience */
   --accentB2:#60a5fa;
 }
+body {
+  font-family: 'Kaushan Script', cursive;
+}
 /* Canvas container */
 #sketch-container {
   position: fixed;
@@ -102,7 +105,15 @@
 }
 
 /* Mode switch tabs */
+
 #mode-switch button{ font-weight: 600; font-size: 14px; line-height: 1; font-family: inherit; }
+
+#mode-switch button{
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1;
+}
+
 #mode-switch button.active{
   background: linear-gradient(#0000,#0000), rgba(255,255,255,.10);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 6px 18px rgba(90,140,255,.22);
