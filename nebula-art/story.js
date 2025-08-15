@@ -260,17 +260,22 @@
         if ($path) $path.textContent = path;
         if ($choices) {
           $choices.innerHTML = "";
-          node.choices.forEach(c => {
-            const btn = document.createElement("button");
-            btn.className = "choice";
-            btn.textContent = c.label;
-            btn.title = c.whisper;
-            btn.onclick = () => {
-              if (typeof onChoiceSound === "function") onChoiceSound(c.key);
-              engine.choose(c.key);
-            };
-            $choices.appendChild(btn);
-          });
+          
+node.choices.forEach(c => {
+  const btn = document.createElement("button");
+  btn.className = `btn choice btn--${c.key}`;  // <-- A or B accent
+  btn.textContent = c.label;
+  btn.title = c.whisper;
+  btn.onclick = () => {
+    // mark picked for a moment
+    btn.classList.add("picked");
+    setTimeout(() => btn.classList.remove("picked"), 350);
+    if (typeof onChoiceSound === "function") onChoiceSound(c.key);
+    engine.choose(c.key);
+  };
+  $choices.appendChild(btn);
+});
+
         }
       },
       onRenderEnding: (end, id, fullPath) => {
