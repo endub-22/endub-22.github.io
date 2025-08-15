@@ -10,11 +10,13 @@
   function startWhispers() {
     $storyUI.hidden = true;
     // sketch keeps running underneath
+    window.setWhispersEnabled(true);
   }
 
   function startStory() {
     $storyUI.hidden = false;
     // sketch keeps running underneath
+    window.setWhispersEnabled(false);
     if (!storyEngine) {
       storyEngine = window.NebulaStory.quickBind({
         titleId: "story-title",

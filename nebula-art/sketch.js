@@ -59,6 +59,7 @@ let guiHidden = false;
 let whispers;
 let storyEngine;
 let whispersEnabled = true;
+window.setWhispersEnabled = flag => { whispersEnabled = flag; };
 
 function handleMode() {
   const isWhispers = params.mode === 'Whispers';
