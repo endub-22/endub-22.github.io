@@ -146,6 +146,10 @@
           hint.textContent = end.whisper;
           $choices.appendChild(hint);
 
+          // break line so replay button sits below hint
+          const br = document.createElement("br");
+          $choices.appendChild(br);
+
           const again = document.createElement("button");
           again.className = "btn again";
           again.textContent = "Try a different cadence";
