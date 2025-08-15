@@ -10,13 +10,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
 
   <!-- Your sketch runs as a module -->
+  <script src="./story.js"></script>
   <script type="module" src="./sketch.js"></script>
 
   <style>
     html,body{margin:0;height:100%;background:black;overflow:hidden}
     canvas{display:block}
+    #story-container{position:absolute;top:0;left:0;width:100%;height:100%;display:none;z-index:10;color:white;background:rgba(0,0,0,0.6);padding:20px;box-sizing:border-box}
+    #story-container>*{margin-bottom:1em}
   </style>
 </head>
-<body></body>
+<body>
+  <div id="story-container">
+    <h1 id="story-title"></h1>
+    <div id="story-body"></div>
+    <div id="story-choices"></div>
+    <div id="story-ending"></div>
+  </div>
+</body>
 </html>
 
