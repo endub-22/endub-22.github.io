@@ -19,13 +19,15 @@
     <button class="btn" data-mode="story" type="button" aria-pressed="false">Story</button>
   </div>
 
-  <!-- Story UI overlay -->
+  <!-- Story UI overlay: now centered, transparent, inherits Whisper font -->
   <section id="story-ui" hidden>
-    <h2 id="story-title"></h2>
-    <p id="story-body"></p>
-    <div id="story-choices"></div>
-    <div id="story-path"></div>
-    <div id="story-ending" class="sr-only" aria-live="polite"></div>
+    <div id="story-wrap">
+      <h2 id="story-title"></h2>
+      <p id="story-body"></p>
+      <div id="story-choices"></div>
+      <div id="story-path"></div>
+      <div id="story-ending" class="sr-only" aria-live="polite"></div>
+    </div>
   </section>
 
   <noscript>
@@ -34,8 +36,9 @@
     </div>
   </noscript>
 
-  <!-- Scripts: p5 first, then your engines, then the wiring -->
+  <!-- Scripts: p5 first, then your sketch, then engines, then wiring -->
   <script src="https://cdn.jsdelivr.net/npm/p5@1.9.3/lib/p5.min.js"></script>
+  <script src="sketch.js"></script>
   <script src="whispers.js"></script>
   <script src="story.js"></script>
   <script src="main.js"></script>
@@ -45,17 +48,20 @@
     document.addEventListener("click", e => {
       const btn = e.target.closest(".btn");
       if (!btn) return;
-
       const ripple = document.createElement("span");
       ripple.className = "ripple";
-
       const rect = btn.getBoundingClientRect();
       ripple.style.left = (e.clientX - rect.left) + "px";
       ripple.style.top  = (e.clientY - rect.top)  + "px";
-
       btn.appendChild(ripple);
       ripple.addEventListener("animationend", () => ripple.remove());
     }, { capture: true });
+
+    // Ensure Story UI uses the same font as the Whispers page
+    window.addEventListener("DOMContentLoaded", () => {
+      const bodyFont = getComputedStyle(document.body).fontFamily;
+      document.getElementById("story-ui").style.fontFamily = bodyFont;
+    });
   </script>
 </body>
 </html>
