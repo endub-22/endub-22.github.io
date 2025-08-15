@@ -59,7 +59,7 @@ let whispersEnabled = true;
 function handleMode() {
   const isWhispers = params.mode === 'Whispers';
   const el = document.getElementById('story-container');
-  if (el) el.style.display = isWhispers ? 'none' : 'block';
+  if (el) el.style.display = isWhispers ? 'none' : 'flex';
   whispersEnabled = isWhispers;
 }
 // Built-in palettes (HSB triples)
