@@ -147,8 +147,10 @@
           $choices.appendChild(hint);
 
           // break line so replay button sits below hint
-          const br = document.createElement("br");
-          $choices.appendChild(br);
+          const br1 = document.createElement("br");
+          const br2 = document.createElement("br");
+          $choices.append(br1, br2); // Works in modern browsers
+
 
           const again = document.createElement("button");
           again.className = "btn again";
