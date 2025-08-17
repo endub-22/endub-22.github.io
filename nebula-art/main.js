@@ -10,7 +10,7 @@
   function startWhispers() {
     $storyUI.hidden = true;
     // sketch keeps running underneath
-    window.setWhispersEnabled(true);
+    window.setWhispersEnabled(false);
   }
 
   function startStory() {
