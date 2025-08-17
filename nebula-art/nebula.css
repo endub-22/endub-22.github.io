@@ -17,6 +17,11 @@ body {
   z-index: 1;
 }
 
+br {
+    display: inline;
+}
+
+
 /* Mode switch stays on top */
 #mode-switch { z-index: 1000; }
 
