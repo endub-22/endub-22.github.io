@@ -67,7 +67,7 @@ body {
 @keyframes nebula-shimmer { 0%{ background-position: 0% 50%; } 100%{ background-position: 200% 50%; } }
 
 .btn{
-  --g1:#ffffff10; --g2:#ffffff25;
+  --g1:#00000010; --g2:#00000025;
   position: relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
   padding:.65rem .9rem; border-radius:12px; color:var(--ink); 
   background: linear-gradient(120deg, var(--g1), var(--g2)) border-box;
