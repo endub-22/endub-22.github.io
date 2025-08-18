@@ -27,7 +27,7 @@ export function createWhispers(gui, getPaletteName) {
     "It is {weekday}. Tiny steps will do.",
     "Signals from {browser} received. I see you.",
     "Relax your shoulders. Unclench your jaw.",
-    "At lat {tz} the sky drifts with you.",
+    "At {tz} the sky drifts with you.",
     "Palette {palette} engaged and swirling.",
     "Drink some water. Then some more.",
     "Inhale four, exhale six. I will wait.",
@@ -41,8 +41,21 @@ export function createWhispers(gui, getPaletteName) {
     "The colors are thinking about you.",
     "Even nebulas rest. You can too.",
     "You do not have to hurry right now.",
-    "A gentle focus finds you."
-  ];
+    "A gentle focus finds you.",
+    "Every exhale writes a quiet poem in you.",
+    "The horizon is patient, and so may you be.",
+    "Even small sparks of joy light whole rooms.",
+    "Your pulse is proof of persistence.",
+    "Kindness toward yourself multiplies quietly.",
+    "The day bends, but you do not have to break.",
+    "Each blink is a tiny meditation.",
+    "The {weekday} sky remembers your softness.",
+    "Waves still reach the shore, even when unseen.",
+    "You are not behind. You are precisely here.",
+    "Rest is also progress.",
+    "The silence between thoughts can hold you.",
+    "Your breath is a compass; follow it home."
+    ];
 
   // personalization context
   const ctx = {
