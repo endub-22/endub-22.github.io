@@ -166,7 +166,7 @@ Hold your breath, and you will dissolve into listening until the listening speak
           $choices.innerHTML = "";
           node.choices.forEach(c => {
             const btn = document.createElement("button");
-            btn.className = `btn choice btn--${c.key}`;
+            btn.className = "btn";
             btn.textContent = c.label;
             btn.title = c.whisper;
             btn.onclick = () => {
@@ -178,7 +178,7 @@ Hold your breath, and you will dissolve into listening until the listening speak
             $choices.appendChild(btn);
           });
           // focus first choice for keyboard users
-          const first = $choices.querySelector(".choice");
+          const first = $choices.querySelector(".btn");
           if (first) first.focus();
         }
       },
@@ -195,7 +195,7 @@ Hold your breath, and you will dissolve into listening until the listening speak
           $choices.appendChild(hint);
 
           const again = document.createElement("button");
-          again.className = "btn again";
+          again.className = "btn";
           again.textContent = "Try a different cadence";
           again.onclick = () => engine.reset();
           $choices.appendChild(again);
