@@ -1,0 +1,13 @@
+{
+  "name": "endub-22.github.io",
+  "version": "1.0.0",
+  "description": "This repository hosts the **Nebula Art** experiment. The web app is composed of several small scripts coordinated by `main.js`.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
