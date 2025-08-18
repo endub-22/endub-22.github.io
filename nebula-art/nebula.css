@@ -54,7 +54,7 @@ body {
 #story-body  { margin: 0 0 12px 0; font-size: 30px; color: #ff9292; }
 #story-choices { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
 #story-choices.ending { flex-direction: column; align-items: center; }
-.whisper { color: #ff9292; }
+.whisper { font-size: 18px; color: #ff9292; }
 #story-path { margin-top: 8px; font-size: 12px; opacity: .85; }
 .sr-only { position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
 #story-wrap h2, #story-wrap p, #story-path, #story-title, #story-body, .whisper {
