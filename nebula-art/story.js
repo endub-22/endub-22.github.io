@@ -173,7 +173,7 @@ Hold your breath, and you will dissolve into listening until the listening speak
               btn.classList.add("picked");
               setTimeout(() => btn.classList.remove("picked"), 350);
               if (typeof onChoiceSound === "function") onChoiceSound(c.key);
-              engine.choose(c.key);
+              setTimeout(() => engine.choose(c.key), 250);
             };
             $choices.appendChild(btn);
           });
@@ -197,7 +197,11 @@ Hold your breath, and you will dissolve into listening until the listening speak
           const again = document.createElement("button");
           again.className = "btn";
           again.textContent = "Try a different cadence";
-          again.onclick = () => engine.reset();
+          again.onclick = () => {
+            again.classList.add("picked");
+            setTimeout(() => again.classList.remove("picked"), 350);
+            setTimeout(() => engine.reset(), 250);
+          };
           $choices.appendChild(again);
         }
         if ($ending) $ending.textContent = id;
