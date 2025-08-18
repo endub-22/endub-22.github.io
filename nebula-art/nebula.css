@@ -54,10 +54,11 @@ body {
 #story-body  { margin: 0 0 12px 0; font-size: 30px; color: #ff9292; }
 #story-choices { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
 #story-choices.ending { flex-direction: column; align-items: center; }
+.whisper { color: #ff9292; }
 #story-path { margin-top: 8px; font-size: 12px; opacity: .85; }
 .sr-only { position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
-#story-wrap h2, #story-wrap p, #story-path, #story-title, #story-body {
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+#story-wrap h2, #story-wrap p, #story-path, #story-title, #story-body, .whisper {
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.75);
 }
 #story-ui[hidden] { display: none; }
 /* Buttons */
