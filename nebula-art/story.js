@@ -162,6 +162,7 @@ Hold your breath, and you will dissolve into listening until the listening speak
         if ($body) $body.textContent = node.text;
         if ($path) $path.textContent = path;
         if ($choices) {
+          $choices.classList.remove("ending");
           $choices.innerHTML = "";
           node.choices.forEach(c => {
             const btn = document.createElement("button");
@@ -187,16 +188,11 @@ Hold your breath, and you will dissolve into listening until the listening speak
         if ($path) $path.textContent = fullPath + " → " + id;
         if ($choices) {
           $choices.innerHTML = "";
+          $choices.classList.add("ending");
           const hint = document.createElement("div");
           hint.className = "whisper";
           hint.textContent = end.whisper;
           $choices.appendChild(hint);
-
-          // break line so replay button sits below hint
-          const br1 = document.createElement("br");
-          const br2 = document.createElement("br");
-          $choices.append(br1, br2); // Works in modern browsers
-
 
           const again = document.createElement("button");
           again.className = "btn again";
