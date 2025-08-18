@@ -111,6 +111,9 @@ function setup() {
 
   // GUI
   gui = new dat.GUI();
+  // Ensure GUI floats above sketch and can capture input
+  gui.domElement.style.zIndex = '2000';
+  gui.domElement.style.pointerEvents = 'auto';
   gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001).name('Noise Scale').onChange(saveParams);
   gui.add(params, 'tSpeed',     0.001,  0.1,  0.001).name('Time Speed').onChange(saveParams);
   gui.add(params, 'octaves',    1,      16,   1).name('Octaves')
@@ -312,7 +315,12 @@ function keyPressed() {
   if (key === 's' || key === 'S') saveCanvas('nebula', 'png');
   if (key === 'g' || key === 'G') {
     guiHidden = !guiHidden;
-    if (gui) gui.domElement.style.display = guiHidden ? 'none' : '';
+    if (gui) {
+      gui.domElement.style.display = guiHidden ? 'none' : '';
+      gui.domElement.style.pointerEvents = guiHidden ? 'none' : 'auto';
+      const container = document.getElementById('sketch-container');
+      if (container) container.style.pointerEvents = guiHidden ? 'auto' : 'none';
+    }
   }
 }
 
