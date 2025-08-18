@@ -1,5 +1,5 @@
 :root{
-  --ink: #828282;
+  --ink: #9744dc;
   --panel:rgba(0,0,0,0.55);
   --ring:#7dd3fc;
   --accentA1:#e879f9;  /* A = voice/motion */
@@ -7,7 +7,7 @@
   --accentB1:#22d3ee;  /* B = listening/patience */
   --accentB2:#60a5fa;
   --primaryTextColor: #ff9292;
-  --shadow: 2px 2px 5px rgba(0, 0, 0, 0.75);
+  --shadow: 2px 2px 5px rgba(0, 0, 0, 0.95);
 }
 body {
   font-family: 'Kaushan Script', cursive;
