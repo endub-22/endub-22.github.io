@@ -2,28 +2,74 @@
 (function (global) {
   "use strict";
 
-  const nodes = [
-    { id:1, title:"The Echo Gate",
-      text:"A ring of cold light waits. A whisper on glass asks, \"Do you cross by voice or by listening?\"",
-      choices:[ { key:"A", label:"Step through", whisper:"Answer with motion." },
-                { key:"B", label:"Listen longer", whisper:"Answer with patience." } ] },
-    { id:2, title:"The Glass River",
-      text:"Reflections blink out then return. The current hums in a tuning you almost remember.",
-      choices:[ { key:"A", label:"Cross the current", whisper:"Trust your footing." },
-                { key:"B", label:"Follow the bank", whisper:"Trace for patterns." } ] },
-    { id:3, title:"The Archive of Motes",
-      text:"Dust lights assemble into living letters when you breathe.",
-      choices:[ { key:"A", label:"Read the sigils", whisper:"Let meaning settle." },
-                { key:"B", label:"Blow the dust away", whisper:"Keep only what stays." } ] },
-    { id:4, title:"The Split Star",
-      text:"A cleaved star offers routes and secrets.",
-      choices:[ { key:"A", label:"Ask for a guide", whisper:"Accept a companion frequency." },
-                { key:"B", label:"Go alone", whisper:"Keep your signal single." } ] },
-    { id:5, title:"The Human Frequency",
-      text:"Silence answers with your pulse. The final whisper is your own.",
-      choices:[ { key:"A", label:"Speak your name", whisper:"Declare presence." },
-                { key:"B", label:"Hold your breath", whisper:"Dissolve into listening." } ] },
-  ];
+const nodes = [
+  {
+    id: 1,
+    title: "The Echo Gate",
+    text: `A ring of cold light hangs in the air, rimed with silver frost that does not melt. 
+Each footstep returns as a clear echo, counted by the gate like beads on a patient string. 
+When you breathe, the circle tightens; when you hold your breath, it widens, as if testing your cadence. 
+Somewhere inside the glow a voice the size of a needle asks, "Do you cross by voice or by listening?" 
+The light brightens at the thought of an answer, calm as stone, curious as a cat.`,
+    choices: [
+      { key: "A", label: "Step through", whisper: "Answer with motion." },
+      { key: "B", label: "Listen longer", whisper: "Answer with patience." }
+    ]
+  },
+  {
+    id: 2,
+    title: "The Glass River",
+    text: `A river runs clear as glass, shot through with threads of quicksilver. 
+Your reflection blinks out, then winks back, each time a step older or younger, as if the water is testing versions of you. 
+The current hums in a tuning you almost remember from a night you cannot place. 
+Pebbles chime when the flow touches them, a quiet choir answering the sky. 
+You can trust the slick stones and cross, or follow the bank and read the water's script for patterns.`,
+    choices: [
+      { key: "A", label: "Cross the current", whisper: "Trust your footing." },
+      { key: "B", label: "Follow the bank", whisper: "Trace for patterns." }
+    ]
+  },
+  {
+    id: 3,
+    title: "The Archive of Motes",
+    text: `The chamber is a cathedral of dust. 
+When you breathe in, motes rise and gather; when you breathe out, they knit into letters that spark and wriggle. 
+Sentences form like schools of fish, breaking and rejoining, spelling names that are yours and not yours. 
+Some lines drift toward your skin and try to settle, as if requesting shelter. 
+You can read the sigils and let meaning settle where it will, or blow the dust away and keep only what refuses to leave.`,
+    choices: [
+      { key: "A", label: "Read the sigils", whisper: "Let meaning settle." },
+      { key: "B", label: "Blow the dust away", whisper: "Keep only what stays." }
+    ]
+  },
+  {
+    id: 4,
+    title: "The Split Star",
+    text: `A star hangs above you, split cleanly in two like fruit, its halves held apart by a soft pull that never snaps. 
+Routes run through it in hair-fine filaments, each a road across nights you have not seen. 
+Secrets glint at the cut surface, cold and useful, waiting for hands that do not shake. 
+The star will lend a guide if you ask in the right pitch, a voice that threads between the routes. 
+You can invite a companion frequency, or go alone and keep your signal single.`,
+    choices: [
+      { key: "A", label: "Ask for a guide", whisper: "Accept a companion frequency." },
+      { key: "B", label: "Go alone", whisper: "Keep your signal single." }
+    ]
+  },
+  {
+    id: 5,
+    title: "The Human Frequency",
+    text: `The world falls quiet until quiet becomes a sound. 
+Your pulse answers, steady, a small drum in a vast room. 
+The air carries it back to you, and with it the outline of a final whisper that wears your shape. 
+Speak, and the space will build itself around the name you choose. 
+Hold your breath, and you will dissolve into listening until the listening speaks you.`,
+    choices: [
+      { key: "A", label: "Speak your name", whisper: "Declare presence." },
+      { key: "B", label: "Hold your breath", whisper: "Dissolve into listening." }
+    ]
+  }
+];
+
 
   const endings = {
     E1:{ title:"Drifter's Return", text:"You circle home without proof, only a new quiet that fits behind your ribs. The nebula signed you.", whisper:"Some maps live in lungs." },
