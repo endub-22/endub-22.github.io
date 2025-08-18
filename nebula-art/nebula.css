@@ -25,6 +25,12 @@ br {
 /* Mode switch stays on top */
 #mode-switch { z-index: 1000; }
 
+/* dat.GUI controls should sit above canvas and overlays */
+.dg {
+  z-index: 2000 !important;
+  pointer-events: auto;
+}
+
 /* Layout for switch and story overlay */
 #mode-switch {
   position: fixed;
