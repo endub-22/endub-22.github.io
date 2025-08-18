@@ -1,4 +1,5 @@
-import { createWhispers, TEXT_DEFAULTS } from './whispers.js';
+// Core sketch draws the nebula background. Whispers and story are
+// loaded separately and attached by main.js when needed.
 
 if (typeof window.dat === 'undefined' || typeof window.dat.GUI === 'undefined') {
   throw new Error('dat.GUI not loaded');
@@ -41,7 +42,6 @@ function buildVignette() {
 // Config + State
 // =====================
 const params = {
-  mode:       'Story',
   noiseScale: 0.002,
   tSpeed:     0.007,
   octaves:    8,
@@ -57,16 +57,12 @@ let gui, editorFolder, paletteController;
 let guiHidden = false;
 
 let whispers;
-let storyEngine;
 let whispersEnabled = true;
-window.setWhispersEnabled = flag => { whispersEnabled = flag; };
 
-function handleMode() {
-  const isWhispers = params.mode === 'Whispers';
-  const el = document.getElementById('story-container');
-  if (el) el.style.display = isWhispers ? 'none' : 'flex';
-  whispersEnabled = isWhispers;
-}
+export const setWhispersOverlay = w => { whispers = w; };
+export const setWhispersEnabled = flag => { whispersEnabled = flag; };
+export const getGUI = () => gui;
+export const getPaletteName = () => params.palette;
 // Built-in palettes (HSB triples)
 const BASE_PALETTES = {
   Nebula:   [ [300,80,90], [230,80,90], [190,70,90], [160,70,90] ],
@@ -115,7 +111,6 @@ function setup() {
 
   // GUI
   gui = new dat.GUI();
-  gui.add(params, 'mode', ['Whispers','Story']).name('Mode').onChange(handleMode);
   gui.add(params, 'noiseScale', 0.0005, 0.01, 0.0001).name('Noise Scale').onChange(saveParams);
   gui.add(params, 'tSpeed',     0.001,  0.1,  0.001).name('Time Speed').onChange(saveParams);
   gui.add(params, 'octaves',    1,      16,   1).name('Octaves')
@@ -138,11 +133,6 @@ function setup() {
   vig.add(vignette, 'x', 0, 1, 0.01).name('Center X').onChange(buildVignette);
   vig.add(vignette, 'y', 0, 1, 0.01).name('Center Y').onChange(buildVignette);
   buildVignette();
-
-  // Whispers overlay module
-  whispers = createWhispers(gui, () => params.palette);
-  storyEngine = NebulaStory.quickBind({ textDefaults: TEXT_DEFAULTS });
-  handleMode();
 
   // Hide GUI by default unless ?gui=1
   const showFromQuery = new URLSearchParams(location.search).get('gui') === '1';
@@ -190,7 +180,7 @@ function draw() {
   }
 
   // whispers overlay once
-  if (whispersEnabled) {
+  if (whispersEnabled && whispers) {
     whispers.update(deltaTime);
     whispers.draw();
   }
