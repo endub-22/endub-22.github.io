@@ -1,6 +1,6 @@
 :root{
   --ink: #9744dc;
-  --panel:rgba(0,0,0,0.55);
+  --panel:rgba(0,0,0,0.25);
   --ring:#7dd3fc;
   --accentA1:#e879f9;  /* A = voice/motion */
   --accentA2:#a78bfa;
@@ -69,7 +69,7 @@ body {
 .btn{
   --g1:#ffffff22; --g2:#ffffff55;
   position: relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-  padding:.65rem .9rem; border-radius:12px; color:var(--ink);
+  padding:.65rem .9rem; border-radius:12px; color:var(--ink); text-shadow: var(--shadow);
   background: linear-gradient(120deg, var(--g1), var(--g2)) border-box;
   border:1px solid transparent; background-clip: padding-box, border-box;
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
