@@ -1,11 +1,13 @@
 :root{
-  --ink:#000;
+  --ink:#a0a0a0;
   --panel:rgba(0,0,0,0.55);
   --ring:#7dd3fc;
   --accentA1:#e879f9;  /* A = voice/motion */
   --accentA2:#a78bfa;
   --accentB1:#22d3ee;  /* B = listening/patience */
   --accentB2:#60a5fa;
+  --primaryTextColor: #ff9292;
+  --shadow: 2px 2px 5px rgba(0, 0, 0, 0.75);
 }
 body {
   font-family: 'Kaushan Script', cursive;
@@ -50,15 +52,15 @@ body {
   text-align: center;
   pointer-events: auto;         /* ...except on content */
 }
-#story-title { margin: 0 0 8px 0; font-size: 70px; color: #ff9292; }
-#story-body  { margin: 0 0 12px 0; font-size: 30px; color: #ff9292; }
+#story-title { margin: 0 0 8px 0; font-size: 70px; color: var(--primaryTextColor); }
+#story-body  { margin: 0 0 12px 0; font-size: 30px; color: var(--primaryTextColor); }
 #story-choices { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
 #story-choices.ending { flex-direction: column; align-items: center; }
 .whisper { font-size: 18px; color: #ff9292; }
 #story-path { margin-top: 8px; font-size: 12px; opacity: .85; }
 .sr-only { position: absolute; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
 #story-wrap h2, #story-wrap p, #story-path, #story-title, #story-body, .whisper {
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.75);
+  text-shadow: var(--shadow);
 }
 #story-ui[hidden] { display: none; }
 /* Buttons */
@@ -67,7 +69,7 @@ body {
 .btn{
   --g1:#ffffff22; --g2:#ffffff55;
   position: relative; display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-  padding:.65rem .9rem; border-radius:12px; color:var(--ink);
+  padding:.65rem .9rem; border-radius:12px; color:var(--ink); text-shadow: var(--shadow);
   background: linear-gradient(120deg, var(--g1), var(--g2)) border-box;
   border:1px solid transparent; background-clip: padding-box, border-box;
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
