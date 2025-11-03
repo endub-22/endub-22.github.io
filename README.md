@@ -3,6 +3,8 @@
 This repository hosts the **Nebula Art** experiment. The web app is
 composed of several small scripts coordinated by `main.js`.
 
+https://endub-22.github.io/nebula-art/index.html
+
 ## Module Overview
 
 | File | Purpose |
