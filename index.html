@@ -8,6 +8,7 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       color-scheme: dark;
@@ -22,6 +23,7 @@
       --accent-2: #38bdf8;
       --good: #22c55e;
       --warn: #f59e0b;
+      --bad: #ef4444;
     }
 
     * { box-sizing: border-box; }
@@ -35,20 +37,11 @@
         linear-gradient(135deg, #09090b, #111827 70%, #0f172a);
     }
 
-    button, input, textarea, select {
-      font: inherit;
-    }
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
 
-    button {
-      border: 0;
-      cursor: pointer;
-    }
-
-    .app {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 250px minmax(0, 1fr);
-    }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 250px minmax(0, 1fr); }
 
     .sidebar {
       padding: 1.25rem;
@@ -60,12 +53,7 @@
       height: 100vh;
     }
 
-    .brand {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+    .brand { display: flex; gap: 0.8rem; align-items: center; margin-bottom: 2rem; }
 
     .logo {
       width: 44px;
@@ -78,22 +66,10 @@
       box-shadow: 0 16px 40px rgba(56, 189, 248, 0.22);
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.1;
-    }
+    .brand h1 { margin: 0; font-size: 1rem; line-height: 1.1; }
+    .brand p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.82rem; }
 
-    .brand p {
-      margin: 0.2rem 0 0;
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    .nav {
-      display: grid;
-      gap: 0.55rem;
-    }
+    .nav { display: grid; gap: 0.55rem; }
 
     .nav button {
       width: 100%;
@@ -107,10 +83,7 @@
       align-items: center;
     }
 
-    .nav button.active,
-    .nav button:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
+    .nav button.active, .nav button:hover { background: rgba(255, 255, 255, 0.08); }
 
     .sidebar-card {
       margin-top: 1.5rem;
@@ -120,19 +93,9 @@
       background: rgba(255, 255, 255, 0.05);
     }
 
-    .sidebar-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.5;
-    }
+    .sidebar-card p { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
 
-    .main {
-      padding: 2rem;
-      max-width: 1240px;
-      width: 100%;
-      margin: 0 auto;
-    }
+    .main { padding: 2rem; max-width: 1240px; width: 100%; margin: 0 auto; }
 
     .topbar {
       display: flex;
@@ -149,12 +112,7 @@
       line-height: 0.95;
     }
 
-    .topbar p {
-      margin: 0.7rem 0 0;
-      color: var(--muted);
-      max-width: 46rem;
-      line-height: 1.6;
-    }
+    .topbar p { margin: 0.7rem 0 0; color: var(--muted); max-width: 46rem; line-height: 1.6; }
 
     .user-card {
       min-width: 210px;
@@ -165,14 +123,9 @@
     }
 
     .user-card strong { display: block; }
-    .user-card span { color: var(--muted); font-size: 0.88rem; }
+    .user-card span { color: var(--muted); font-size: 0.88rem; overflow-wrap: anywhere; }
 
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem; }
 
     .btn {
       padding: 0.75rem 1rem;
@@ -189,12 +142,7 @@
       font-weight: 700;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
     .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
     .card {
@@ -205,22 +153,10 @@
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2);
     }
 
-    .card h3 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
+    .card h3 { margin: 0; font-size: 1.2rem; }
+    .card p { color: var(--muted); line-height: 1.55; }
 
-    .card p {
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    .tag-row {
-      display: flex;
-      gap: 0.45rem;
-      flex-wrap: wrap;
-      margin-top: 0.8rem;
-    }
+    .tag-row { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-top: 0.8rem; }
 
     .tag {
       display: inline-flex;
@@ -233,23 +169,9 @@
       font-size: 0.82rem;
     }
 
-    .status {
-      color: white;
-      background: rgba(34, 197, 94, 0.16);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-
-    .event-list {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .event-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: start;
-    }
+    .status { color: white; background: rgba(34, 197, 94, 0.16); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .event-list { display: grid; gap: 1rem; }
+    .event-meta { display: flex; justify-content: space-between; gap: 1rem; align-items: start; }
 
     .date-pill {
       text-align: center;
@@ -276,10 +198,7 @@
       background: linear-gradient(90deg, var(--accent), var(--accent-2));
     }
 
-    .form-grid {
-      display: grid;
-      gap: 0.85rem;
-    }
+    .form-grid { display: grid; gap: 0.85rem; }
 
     label {
       display: grid;
@@ -300,15 +219,10 @@
 
     textarea { min-height: 96px; resize: vertical; }
 
-    .auth-shell {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 1.5rem;
-    }
+    .auth-shell { min-height: 100vh; display: grid; place-items: center; padding: 1.5rem; }
 
     .auth-card {
-      width: min(96vw, 440px);
+      width: min(96vw, 460px);
       padding: 1.4rem;
       border-radius: 28px;
       background: var(--panel);
@@ -316,12 +230,7 @@
       box-shadow: 0 40px 140px rgba(0,0,0,.4);
     }
 
-    .auth-card h1 {
-      margin: 0 0 0.5rem;
-      font-size: 2.3rem;
-      letter-spacing: -0.05em;
-    }
-
+    .auth-card h1 { margin: 0 0 0.5rem; font-size: 2.3rem; letter-spacing: -0.05em; }
     .auth-card p { color: var(--muted); line-height: 1.55; }
 
     .empty {
@@ -330,6 +239,19 @@
       padding: 1.2rem;
       color: var(--muted);
     }
+
+    .notice {
+      padding: 0.85rem;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.06);
+      color: #e4e4e7;
+      line-height: 1.45;
+      font-size: 0.92rem;
+    }
+
+    .notice.error { border-color: rgba(239, 68, 68, 0.45); background: rgba(239, 68, 68, 0.12); }
+    .notice.good { border-color: rgba(34, 197, 94, 0.45); background: rgba(34, 197, 94, 0.12); }
 
     @media (max-width: 900px) {
       .app { grid-template-columns: 1fr; }
@@ -345,7 +267,25 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useMemo, useState } = React;
+    const { useEffect, useMemo, useState } = React;
+
+    // Phase 2 setup:
+    // 1. Create a Supabase project.
+    // 2. Go to Project Settings > API.
+    // 3. Paste your Project URL and anon public key below.
+    // 4. In Supabase Auth > URL Configuration, set Site URL to:
+    //    https://endub-22.github.io
+    const SUPABASE_URL = "PASTE_SUPABASE_PROJECT_URL_HERE";
+    const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_PUBLIC_KEY_HERE";
+
+    const isSupabaseConfigured =
+      SUPABASE_URL.startsWith("https://") &&
+      !SUPABASE_URL.includes("PASTE_") &&
+      !SUPABASE_ANON_KEY.includes("PASTE_");
+
+    const supabaseClient = isSupabaseConfigured
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
     const initialGames = [
       { id: 1, title: "Dune: Imperium", min: 1, max: 4, time: 120, owner: "Nick", notes: "Deck building, worker placement, spice drama." },
@@ -374,16 +314,58 @@
       }
     ];
 
+    function userFromSession(session) {
+      const authUser = session?.user;
+      if (!authUser) return null;
+      return {
+        id: authUser.id,
+        username: authUser.user_metadata?.username || authUser.email?.split("@")[0] || "Player",
+        email: authUser.email || ""
+      };
+    }
+
     function App() {
-      const [isAuthed, setIsAuthed] = useState(false);
+      const [session, setSession] = useState(null);
+      const [loadingSession, setLoadingSession] = useState(Boolean(supabaseClient));
       const [active, setActive] = useState("dashboard");
       const [user, setUser] = useState({ username: "Nick", email: "nick@example.com" });
       const [games, setGames] = useState(initialGames);
       const [events, setEvents] = useState(initialEvents);
       const [polls, setPolls] = useState(initialPolls);
 
-      if (!isAuthed) {
-        return <AuthScreen onLogin={(nextUser) => { setUser(nextUser); setIsAuthed(true); }} />;
+      useEffect(() => {
+        if (!supabaseClient) {
+          setLoadingSession(false);
+          return;
+        }
+
+        supabaseClient.auth.getSession().then(({ data }) => {
+          setSession(data.session);
+          const nextUser = userFromSession(data.session);
+          if (nextUser) setUser(nextUser);
+          setLoadingSession(false);
+        });
+
+        const { data: listener } = supabaseClient.auth.onAuthStateChange((_event, nextSession) => {
+          setSession(nextSession);
+          const nextUser = userFromSession(nextSession);
+          if (nextUser) setUser(nextUser);
+        });
+
+        return () => listener.subscription.unsubscribe();
+      }, []);
+
+      const handleLogout = async () => {
+        if (supabaseClient) await supabaseClient.auth.signOut();
+        setSession(null);
+      };
+
+      if (loadingSession) {
+        return <div className="auth-shell"><div className="auth-card"><div className="logo">🎲</div><h1>Loading</h1><p>Checking your session...</p></div></div>;
+      }
+
+      if (!session) {
+        return <AuthScreen onLogin={(nextUser, nextSession) => { setUser(nextUser); setSession(nextSession || { user: nextUser }); }} />;
       }
 
       const navItems = [
@@ -414,7 +396,7 @@
             </nav>
 
             <div className="sidebar-card">
-              <p><strong>Phase 1 prototype</strong><br />Mock data only. Supabase hooks come next.</p>
+              <p><strong>Phase 2</strong><br />Supabase auth is wired. Game data is still mocked until Phase 3.</p>
             </div>
           </aside>
 
@@ -423,7 +405,7 @@
             {active === "games" && <Games games={games} setGames={setGames} user={user} />}
             {active === "events" && <Events events={events} setEvents={setEvents} user={user} />}
             {active === "polls" && <Polls polls={polls} setPolls={setPolls} games={games} events={events} user={user} />}
-            {active === "account" && <Account user={user} setUser={setUser} onLogout={() => setIsAuthed(false)} />}
+            {active === "account" && <Account user={user} setUser={setUser} onLogout={handleLogout} />}
           </main>
         </div>
       );
@@ -431,26 +413,88 @@
 
     function AuthScreen({ onLogin }) {
       const [mode, setMode] = useState("login");
-      const [username, setUsername] = useState("Nick");
-      const [email, setEmail] = useState("nick@example.com");
+      const [username, setUsername] = useState("");
+      const [email, setEmail] = useState("");
+      const [password, setPassword] = useState("");
+      const [busy, setBusy] = useState(false);
+      const [message, setMessage] = useState("");
+      const [error, setError] = useState("");
+
+      const authAction = async () => {
+        setBusy(true);
+        setMessage("");
+        setError("");
+
+        try {
+          if (!isSupabaseConfigured) {
+            if (mode === "reset") {
+              setMessage("Supabase is not configured yet. Paste your URL and anon key into index.html first.");
+              return;
+            }
+            onLogin({ username: username || email.split("@")[0] || "Player", email: email || "mock@example.com" });
+            return;
+          }
+
+          if (mode === "login") {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            onLogin(userFromSession(data.session), data.session);
+          }
+
+          if (mode === "signup") {
+            const { data, error } = await supabaseClient.auth.signUp({
+              email,
+              password,
+              options: { data: { username } }
+            });
+            if (error) throw error;
+            if (data.session) {
+              onLogin(userFromSession(data.session), data.session);
+            } else {
+              setMessage("Account created. Check your email to confirm your account before logging in.");
+            }
+          }
+
+          if (mode === "reset") {
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+              redirectTo: window.location.origin
+            });
+            if (error) throw error;
+            setMessage("Password reset email sent. Check your inbox.");
+            setMode("login");
+          }
+        } catch (err) {
+          setError(err.message || "Something went wrong.");
+        } finally {
+          setBusy(false);
+        }
+      };
 
       return (
         <div className="auth-shell">
           <div className="auth-card">
             <div className="logo">🎲</div>
             <h1>{mode === "reset" ? "Reset password" : mode === "signup" ? "Create account" : "Welcome back"}</h1>
-            <p>This is the Phase 1 mock auth screen. Supabase will replace this with real sign-up, login, and password reset.</p>
+            <p>{isSupabaseConfigured ? "Use your group account to continue." : "Supabase placeholders are still active, so this is temporarily running in mock login mode."}</p>
 
             <div className="form-grid">
-              {mode !== "reset" && <label>Username<input value={username} onChange={e => setUsername(e.target.value)} /></label>}
-              <label>Email<input value={email} onChange={e => setEmail(e.target.value)} /></label>
-              {mode !== "reset" && <label>Password<input type="password" value="password123" readOnly /></label>}
-              <button className="btn primary" onClick={() => mode === "reset" ? setMode("login") : onLogin({ username: username || "Player", email })}>
-                {mode === "reset" ? "Send reset email" : mode === "signup" ? "Create account" : "Log in"}
+              {!isSupabaseConfigured && <div className="notice">Paste your Supabase Project URL and anon public key into the constants at the top of the script to enable real auth.</div>}
+              {message && <div className="notice good">{message}</div>}
+              {error && <div className="notice error">{error}</div>}
+
+              {mode === "signup" && <label>Username<input value={username} onChange={e => setUsername(e.target.value)} placeholder="e.g. Nick" /></label>}
+              <label>Email<input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" /></label>
+              {mode !== "reset" && <label>Password<input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Minimum 6 characters" /></label>}
+
+              <button className="btn primary" disabled={busy} onClick={authAction}>
+                {busy ? "Working..." : mode === "reset" ? "Send reset email" : mode === "signup" ? "Create account" : "Log in"}
               </button>
+
               <div className="actions">
-                <button className="btn" onClick={() => setMode(mode === "signup" ? "login" : "signup")}>{mode === "signup" ? "Have an account?" : "Create account"}</button>
-                <button className="btn" onClick={() => setMode("reset")}>Forgot password?</button>
+                <button className="btn" onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setError(""); setMessage(""); }}>
+                  {mode === "signup" ? "Have an account?" : "Create account"}
+                </button>
+                <button className="btn" onClick={() => { setMode("reset"); setError(""); setMessage(""); }}>Forgot password?</button>
               </div>
             </div>
           </div>
@@ -490,7 +534,7 @@
             </div>
             <div className="card">
               <h3>Build order</h3>
-              <p>Phase 1 validates the interface. Phase 2 wires auth. Phase 3 stores games, events, check-ins, and votes in Supabase.</p>
+              <p>Phase 2 handles real accounts. Phase 3 stores games, events, check-ins, polls, and votes in Supabase tables.</p>
             </div>
           </section>
         </>
@@ -656,20 +700,42 @@
     }
 
     function Account({ user, setUser, onLogout }) {
+      const [message, setMessage] = useState("");
+      const [error, setError] = useState("");
+
+      const sendReset = async () => {
+        setMessage("");
+        setError("");
+        if (!supabaseClient) {
+          setMessage("Supabase is not configured yet.");
+          return;
+        }
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(user.email, {
+          redirectTo: window.location.origin
+        });
+        if (error) setError(error.message);
+        else setMessage("Password reset email sent.");
+      };
+
       return (
         <>
-          <Header user={user} title="Account" subtitle="Mock account settings. Supabase auth will provide real login, signup, reset email, and session handling." />
+          <Header user={user} title="Account" subtitle="Real authentication is now wired through Supabase. Profile storage comes in Phase 3." />
           <section className="grid two">
             <div className="card form-grid">
               <h3>Profile</h3>
               <label>Username<input value={user.username} onChange={e => setUser({ ...user, username: e.target.value })} /></label>
-              <label>Email<input value={user.email} onChange={e => setUser({ ...user, email: e.target.value })} /></label>
-              <button className="btn primary">Save profile</button>
+              <label>Email<input value={user.email} disabled /></label>
+              <div className="notice">Username edits are local only for now. In Phase 3, this will save to a profiles table.</div>
             </div>
             <div className="card">
               <h3>Security</h3>
-              <p>Password reset will be handled by Supabase. In Phase 2 this button will trigger a reset email.</p>
-              <div className="actions"><button className="btn">Send reset email</button><button className="btn" onClick={onLogout}>Log out</button></div>
+              <p>Use Supabase auth for password reset and session handling.</p>
+              {message && <div className="notice good">{message}</div>}
+              {error && <div className="notice error">{error}</div>}
+              <div className="actions" style={{ marginTop: "1rem" }}>
+                <button className="btn" onClick={sendReset}>Send reset email</button>
+                <button className="btn" onClick={onLogout}>Log out</button>
+              </div>
             </div>
           </section>
         </>
