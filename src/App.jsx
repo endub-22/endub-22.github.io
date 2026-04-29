@@ -1,13 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import EventDetail from './features/events/EventDetail.jsx'
+import { listEvents } from './services/eventsService.js'
 
 export default function App() {
   const [view, setView] = useState('dashboard')
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(false)
 
-  const mockEvents = [
-    { id: 1, title: 'Friday Game Night', date: '2026-05-01', time: '19:00', location: 'Nicks place', notes: 'Bring snacks', attendees: ['Nick','Sam'] }
-  ]
+  useEffect(() => {
+    loadEvents()
+  }, [])
+
+  async function loadEvents() {
+    setLoading(true)
+    const { data, error } = await listEvents()
+    if (!error) setEvents(data)
+    setLoading(false)
+  }
 
   return (
     <div style={{padding:20}}>
@@ -29,7 +39,14 @@ export default function App() {
         {view === 'events' && (
           <div>
             <h2>Events</h2>
-            {mockEvents.map(e => (
+
+            {loading && <div>Loading events...</div>}
+
+            {!loading && events.length === 0 && (
+              <div>No events yet. Create one in Supabase or next step we’ll add UI.</div>
+            )}
+
+            {events.map(e => (
               <div key={e.id} style={{marginBottom:10}}>
                 <strong>{e.title}</strong>
                 <button onClick={() => {
