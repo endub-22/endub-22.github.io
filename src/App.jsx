@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import EventDetail from './features/events/EventDetail.jsx'
+import EventForm from './features/events/EventForm.jsx'
 import { listEvents } from './services/eventsService.js'
 import { supabase } from './lib/supabaseClient.js'
 import AuthScreen from './features/auth/AuthScreen.jsx'
@@ -53,6 +54,10 @@ export default function App() {
     setView('dashboard')
   }
 
+  function handleEventCreated(newEvent) {
+    setEvents(prev => [newEvent, ...prev])
+  }
+
   if (checkingSession) {
     return <div style={{padding:20}}>Checking login...</div>
   }
@@ -87,6 +92,8 @@ export default function App() {
         {view === 'events' && (
           <div>
             <h2>Events</h2>
+
+            <EventForm userId={session.user.id} onCreated={handleEventCreated} />
 
             {loading && <div>Loading events...</div>}
 
