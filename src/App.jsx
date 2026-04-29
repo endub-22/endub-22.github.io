@@ -1,16 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import EventDetail from './features/events/EventDetail.jsx'
 import { listEvents } from './services/eventsService.js'
+import { supabase } from './lib/supabaseClient.js'
+import AuthScreen from './features/auth/AuthScreen.jsx'
+import { ensureProfile } from './services/profilesService.js'
 
 export default function App() {
+  const [session, setSession] = useState(null)
   const [view, setView] = useState('dashboard')
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    loadEvents()
+    if (!supabase) return
+
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      if (data.session && data.session.user) ensureProfile(data.session.user)
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange(function(_e, session) {
+      setSession(session)
+      if (session && session.user) ensureProfile(session.user)
+    })
+
+    return function() {
+      listener.subscription.unsubscribe()
+    }
   }, [])
+
+  useEffect(() => {
+    if (session) loadEvents()
+  }, [session])
 
   async function loadEvents() {
     setLoading(true)
@@ -19,9 +41,13 @@ export default function App() {
     setLoading(false)
   }
 
+  if (!session) {
+    return React.createElement(AuthScreen, { onLogin: function(s) { setSession(s) } })
+  }
+
   return (
     <div style={{padding:20}}>
-      <h1>Board Night (Modular)</h1>
+      <h1>Board Night</h1>
 
       {view !== 'event-detail' && (
         <nav>
@@ -43,26 +69,23 @@ export default function App() {
             {loading && <div>Loading events...</div>}
 
             {!loading && events.length === 0 && (
-              <div>No events yet. Create one in Supabase or next step we’ll add UI.</div>
+              <div>No events yet.</div>
             )}
 
             {events.map(e => (
-              <div key={e.id} style={{marginBottom:10}}>
+              <div key={e.id}>
                 <strong>{e.title}</strong>
                 <button onClick={() => {
                   setSelectedEvent(e)
                   setView('event-detail')
-                }} style={{marginLeft:10}}>Open</button>
+                }}>Open</button>
               </div>
             ))}
           </div>
         )}
 
         {view === 'event-detail' && (
-          <EventDetail
-            event={selectedEvent}
-            onBack={() => setView('events')}
-          />
+          <EventDetail event={selectedEvent} onBack={() => setView('events')} />
         )}
       </div>
     </div>
