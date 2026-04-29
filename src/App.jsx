@@ -7,17 +7,22 @@ import { ensureProfile } from './services/profilesService.js'
 
 export default function App() {
   const [session, setSession] = useState(null)
+  const [checkingSession, setCheckingSession] = useState(true)
   const [view, setView] = useState('dashboard')
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (!supabase) return
+    if (!supabase) {
+      setCheckingSession(false)
+      return
+    }
 
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
       if (data.session && data.session.user) ensureProfile(data.session.user)
+      setCheckingSession(false)
     })
 
     const { data: listener } = supabase.auth.onAuthStateChange(function(_e, session) {
@@ -41,16 +46,33 @@ export default function App() {
     setLoading(false)
   }
 
+  async function logout() {
+    await supabase.auth.signOut()
+    setSession(null)
+    setEvents([])
+    setView('dashboard')
+  }
+
+  if (checkingSession) {
+    return <div style={{padding:20}}>Checking login...</div>
+  }
+
   if (!session) {
     return React.createElement(AuthScreen, { onLogin: function(s) { setSession(s) } })
   }
 
   return (
     <div style={{padding:20}}>
-      <h1>Board Night</h1>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', gap:20}}>
+        <div>
+          <h1>Board Night</h1>
+          <small>Logged in as {session.user.email}</small>
+        </div>
+        <button onClick={logout}>Log out</button>
+      </div>
 
       {view !== 'event-detail' && (
-        <nav>
+        <nav style={{marginTop:20}}>
           <button onClick={() => setView('dashboard')}>Dashboard</button>
           <button onClick={() => setView('games')}>Games</button>
           <button onClick={() => setView('events')}>Events</button>
