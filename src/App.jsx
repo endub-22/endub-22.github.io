@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import AppShell from './components/AppShell.jsx'
 import EventDetail from './features/events/EventDetail.jsx'
 import EventForm from './features/events/EventForm.jsx'
 import GamesPage from './features/games/GamesPage.jsx'
@@ -56,39 +57,55 @@ export default function App() {
     setCurrentGroup(null)
   }
 
-  if (checkingSession) return <div>Checking login...</div>
+  if (checkingSession) return <div className="loading-screen">Checking login...</div>
   if (!session) return React.createElement(AuthScreen, { onLogin: s => setSession(s) })
 
   if (!currentGroup) {
-    return <GroupsPage userId={session.user.id} onSelectGroup={setCurrentGroup} />
+    return (
+      <AppShell userEmail={session.user.email} currentGroup={null} onLogout={logout}>
+        <GroupsPage userId={session.user.id} onSelectGroup={setCurrentGroup} />
+      </AppShell>
+    )
   }
 
   return (
-    <div style={{padding:20}}>
-      <h1>{currentGroup.name}</h1>
-      <button onClick={() => setCurrentGroup(null)}>Switch Group</button>
-      <button onClick={logout}>Logout</button>
+    <AppShell
+      userEmail={session.user.email}
+      currentGroup={currentGroup}
+      onSwitchGroup={() => {
+        setSelectedEvent(null)
+        setCurrentGroup(null)
+      }}
+      onLogout={logout}
+    >
+      {!selectedEvent && (
+        <nav className="tab-nav">
+          <button className={view === 'events' ? 'active' : ''} onClick={() => setView('events')}>Events</button>
+          <button className={view === 'games' ? 'active' : ''} onClick={() => setView('games')}>Games</button>
+        </nav>
+      )}
 
-      <nav>
-        <button onClick={() => setView('events')}>Events</button>
-        <button onClick={() => setView('games')}>Games</button>
-      </nav>
+      {view === 'games' && !selectedEvent && <GamesPage userId={session.user.id} groupId={currentGroup.id} />}
 
-      {view === 'games' && <GamesPage userId={session.user.id} groupId={currentGroup.id} />}
-
-      {view === 'events' && (
-        <div>
+      {view === 'events' && !selectedEvent && (
+        <section className="content-stack">
           <EventForm userId={session.user.id} groupId={currentGroup.id} onCreated={e => setEvents(prev => [e, ...prev])} />
-          {events.map(e => (
-            <div key={e.id}>
-              {e.title}
-              <button onClick={() => setSelectedEvent(e)}>Open</button>
-            </div>
-          ))}
-        </div>
+          {loading && <div className="empty-state">Loading events...</div>}
+          {!loading && events.length === 0 && <div className="empty-state">No events yet.</div>}
+          <div className="card-grid">
+            {events.map(e => (
+              <article className="card" key={e.id}>
+                <h3>{e.title}</h3>
+                <p>{e.date} at {e.time}</p>
+                {e.location && <p>{e.location}</p>}
+                <button className="btn primary" onClick={() => setSelectedEvent(e)}>Open event</button>
+              </article>
+            ))}
+          </div>
+        </section>
       )}
 
       {selectedEvent && <EventDetail event={selectedEvent} onBack={() => setSelectedEvent(null)} />}
-    </div>
+    </AppShell>
   )
 }
