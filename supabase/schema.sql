@@ -1,10 +1,12 @@
 -- Board Night MVP Supabase schema
 -- Run this in Supabase SQL Editor after creating the project.
--- This schema supports:
+--
+-- Core model:
 -- - public user profiles linked to auth.users
 -- - group-owned game library
--- - events and attendance check-ins
--- - event-linked polls with game options
+-- - events with attendance check-ins
+-- - each event can have one nested poll
+-- - the event creator is also the poll creator
 -- - one active vote per user per poll
 
 create extension if not exists pgcrypto;
@@ -37,9 +39,10 @@ create table if not exists public.events (
   event_time time not null,
   location text,
   notes text,
-  created_by uuid references public.profiles(id) on delete set null,
+  created_by uuid not null references public.profiles(id) on delete cascade,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  unique (id, created_by)
 );
 
 create table if not exists public.event_attendees (
@@ -57,9 +60,11 @@ create table if not exists public.polls (
   title text not null,
   closes_at timestamptz,
   is_closed boolean not null default false,
-  created_by uuid references public.profiles(id) on delete set null,
+  created_by uuid not null references public.profiles(id) on delete cascade,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  unique (event_id),
+  foreign key (event_id, created_by) references public.events(id, created_by) on delete cascade
 );
 
 create table if not exists public.poll_options (
@@ -77,6 +82,51 @@ create table if not exists public.poll_votes (
   created_at timestamptz not null default now(),
   primary key (poll_id, user_id)
 );
+
+-- Helpful constraints if this file is run after an earlier draft schema.
+-- If these fail because of existing test data, clear the affected test rows and rerun.
+alter table public.events
+  alter column created_by set not null;
+
+alter table public.polls
+  alter column created_by set not null;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'events_id_created_by_key'
+      and conrelid = 'public.events'::regclass
+  ) then
+    alter table public.events add constraint events_id_created_by_key unique (id, created_by);
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'polls_event_id_key'
+      and conrelid = 'public.polls'::regclass
+  ) then
+    alter table public.polls add constraint polls_event_id_key unique (event_id);
+  end if;
+end $$;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'polls_event_creator_match_fkey'
+      and conrelid = 'public.polls'::regclass
+  ) then
+    alter table public.polls
+      add constraint polls_event_creator_match_fkey
+      foreign key (event_id, created_by)
+      references public.events(id, created_by)
+      on delete cascade;
+  end if;
+end $$;
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -151,6 +201,7 @@ alter table public.poll_votes enable row level security;
 -- Any signed-in group member can read shared group data.
 -- Signed-in users can create records.
 -- Users can update/delete their own profile, games, events, attendance, polls, and votes.
+-- Polls are nested under events. Only the event creator can create, update, or delete that event's poll.
 -- This is suitable for a small trusted group. Tighten later if you add admin roles.
 
 drop policy if exists "Profiles are readable by signed-in users" on public.profiles;
@@ -247,18 +298,44 @@ on public.polls for select
 to authenticated
 using (true);
 
-drop policy if exists "Signed-in users can create polls" on public.polls;
-create policy "Signed-in users can create polls"
+drop policy if exists "Event creators can create one event poll" on public.polls;
+create policy "Event creators can create one event poll"
 on public.polls for insert
 to authenticated
-with check (auth.uid() = created_by);
+with check (
+  auth.uid() = created_by
+  and exists (
+    select 1
+    from public.events e
+    where e.id = event_id
+      and e.created_by = auth.uid()
+  )
+);
 
-drop policy if exists "Creators can update polls" on public.polls;
-create policy "Creators can update polls"
+drop policy if exists "Signed-in users can create polls" on public.polls;
+
+drop policy if exists "Event creators can update polls" on public.polls;
+create policy "Event creators can update polls"
 on public.polls for update
 to authenticated
 using (auth.uid() = created_by)
-with check (auth.uid() = created_by);
+with check (
+  auth.uid() = created_by
+  and exists (
+    select 1
+    from public.events e
+    where e.id = event_id
+      and e.created_by = auth.uid()
+  )
+);
+
+drop policy if exists "Creators can update polls" on public.polls;
+
+drop policy if exists "Event creators can delete polls" on public.polls;
+create policy "Event creators can delete polls"
+on public.polls for delete
+to authenticated
+using (auth.uid() = created_by);
 
 drop policy if exists "Poll options are readable by signed-in users" on public.poll_options;
 create policy "Poll options are readable by signed-in users"
@@ -266,14 +343,32 @@ on public.poll_options for select
 to authenticated
 using (true);
 
-drop policy if exists "Signed-in users can create poll options" on public.poll_options;
-create policy "Signed-in users can create poll options"
+drop policy if exists "Event creators can create poll options" on public.poll_options;
+create policy "Event creators can create poll options"
 on public.poll_options for insert
 to authenticated
 with check (exists (
-  select 1 from public.polls p
+  select 1
+  from public.polls p
+  join public.events e on e.id = p.event_id
   where p.id = poll_id
     and p.created_by = auth.uid()
+    and e.created_by = auth.uid()
+));
+
+drop policy if exists "Signed-in users can create poll options" on public.poll_options;
+
+drop policy if exists "Event creators can delete poll options" on public.poll_options;
+create policy "Event creators can delete poll options"
+on public.poll_options for delete
+to authenticated
+using (exists (
+  select 1
+  from public.polls p
+  join public.events e on e.id = p.event_id
+  where p.id = poll_id
+    and p.created_by = auth.uid()
+    and e.created_by = auth.uid()
 ));
 
 drop policy if exists "Votes are readable by signed-in users" on public.poll_votes;
@@ -295,6 +390,12 @@ with check (
       and p.is_closed = false
       and (p.closes_at is null or p.closes_at > now())
   )
+  and exists (
+    select 1
+    from public.poll_options po
+    where po.id = option_id
+      and po.poll_id = poll_votes.poll_id
+  )
 );
 
 drop policy if exists "Users can change own vote" on public.poll_votes;
@@ -310,6 +411,12 @@ with check (
     where p.id = poll_id
       and p.is_closed = false
       and (p.closes_at is null or p.closes_at > now())
+  )
+  and exists (
+    select 1
+    from public.poll_options po
+    where po.id = option_id
+      and po.poll_id = poll_votes.poll_id
   )
 );
 
