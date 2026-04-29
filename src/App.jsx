@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import EventDetail from './features/events/EventDetail.jsx'
 import EventForm from './features/events/EventForm.jsx'
+import GamesPage from './features/games/GamesPage.jsx'
 import { listEvents } from './services/eventsService.js'
 import { supabase } from './lib/supabaseClient.js'
 import AuthScreen from './features/auth/AuthScreen.jsx'
@@ -87,7 +88,9 @@ export default function App() {
       <div style={{marginTop:20}}>
         {view === 'dashboard' && <div>Dashboard coming next</div>}
 
-        {view === 'games' && <div>Games module coming next</div>}
+        {view === 'games' && (
+          <GamesPage userId={session.user.id} />
+        )}
 
         {view === 'events' && (
           <div>
