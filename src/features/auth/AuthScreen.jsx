@@ -25,6 +25,23 @@ export default function AuthScreen({ onLogin }) {
     }
   }
 
+  async function handleSignup(e) {
+    e.preventDefault()
+    setError('')
+    setMessage('')
+    setBusy(true)
+
+    const { error } = await supabase.auth.signUp({ email, password })
+    setBusy(false)
+
+    if (error) {
+      setError(error.message)
+    } else {
+      setMessage('Check your email to confirm signup')
+      setMode('login')
+    }
+  }
+
   async function handlePasswordReset(e) {
     e.preventDefault()
     setError('')
@@ -50,29 +67,41 @@ export default function AuthScreen({ onLogin }) {
     setMode('login')
   }
 
+  const handler = mode === 'login' ? handleLogin : mode === 'signup' ? handleSignup : handlePasswordReset
+
   return (
     <div className="auth-screen">
-      <form className="auth-card" onSubmit={mode === 'reset' ? handlePasswordReset : handleLogin}>
+      <form className="auth-card" onSubmit={handler}>
         <div className="brand-mark">🎲</div>
-        <h2>{mode === 'reset' ? 'Reset password' : 'Login'}</h2>
-        <p>{mode === 'reset' ? 'Enter your email and we will send you a reset link.' : 'Sign in to manage your game groups.'}</p>
+        <h2>
+          {mode === 'login' && 'Login'}
+          {mode === 'signup' && 'Sign Up'}
+          {mode === 'reset' && 'Reset password'}
+        </h2>
 
         <input placeholder="email" type="email" value={email} onChange={e => setEmail(e.target.value)} />
 
-        {mode === 'login' && (
+        {(mode === 'login' || mode === 'signup') && (
           <input placeholder="password" type="password" value={password} onChange={e => setPassword(e.target.value)} />
         )}
 
         <button className="btn primary" disabled={busy} type="submit">
-          {busy ? 'Working...' : mode === 'reset' ? 'Send reset email' : 'Login'}
+          {busy ? 'Working...' : mode === 'login' ? 'Login' : mode === 'signup' ? 'Sign Up' : 'Send reset email'}
         </button>
 
-        {mode === 'login' ? (
-          <button type="button" className="btn ghost" onClick={() => { setMode('reset'); setError(''); setMessage('') }}>
-            Forgot password?
-          </button>
-        ) : (
-          <button type="button" className="btn ghost" onClick={() => { setMode('login'); setError(''); setMessage('') }}>
+        {mode === 'login' && (
+          <>
+            <button type="button" className="btn ghost" onClick={() => setMode('signup')}>
+              Create account
+            </button>
+            <button type="button" className="btn ghost" onClick={() => setMode('reset')}>
+              Forgot password?
+            </button>
+          </>
+        )}
+
+        {(mode === 'signup' || mode === 'reset') && (
+          <button type="button" className="btn ghost" onClick={() => setMode('login')}>
             Back to login
           </button>
         )}
