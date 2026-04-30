@@ -25,8 +25,9 @@ export default function EventDetail({ event, onBack }) {
   }
 
   async function loadGames() {
-    if (!event.groupId) return
-    const { data } = await listGames(event.groupId)
+    const gid = event.groupId || event.group_id
+    if (!gid) return
+    const { data } = await listGames(gid)
     setGames(data)
   }
 
