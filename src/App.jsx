@@ -49,7 +49,13 @@ export default function App() {
   async function loadEvents() {
     setLoading(true)
     const { data } = await listEvents()
-    setEvents(data.filter(e => e.groupId === currentGroup.id))
+
+    const filtered = data.filter(e => {
+      const gid = e.groupId || e.group_id
+      return gid === currentGroup.id
+    })
+
+    setEvents(filtered)
     setLoading(false)
   }
 
@@ -97,7 +103,29 @@ export default function App() {
       </nav>
 
       {view === 'games' && <GamesPage userId={session.user.id} groupId={currentGroup.id} />}
-      {view === 'events' && <EventForm userId={session.user.id} groupId={currentGroup.id} onCreated={e => setEvents(prev => [e, ...prev])} />}
+
+      {view === 'events' && (
+        <>
+          <EventForm userId={session.user.id} groupId={currentGroup.id} onCreated={e => setEvents(prev => [e, ...prev])} />
+
+          <div>
+            {loading && <div>Loading events...</div>}
+            {!loading && events.length === 0 && <div>No events yet.</div>}
+
+            {events.map(e => (
+              <div key={e.id} onClick={() => setSelectedEvent(e)} style={{cursor:'pointer', marginBottom:10}}>
+                <strong>{e.title}</strong>
+                <div>{e.date} at {e.time}</div>
+              </div>
+            ))}
+          </div>
+
+          {selectedEvent && (
+            <EventDetail event={selectedEvent} onBack={() => setSelectedEvent(null)} />
+          )}
+        </>
+      )}
+
       {view === 'admin' && <AdminPanel groupId={currentGroup.id} />}
 
     </AppShell>
