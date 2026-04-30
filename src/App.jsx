@@ -19,6 +19,7 @@ export default function App() {
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [loading, setLoading] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => {
     if (!supabase) {
@@ -43,8 +44,22 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    if (session && currentGroup) loadEvents()
+    if (session && currentGroup) {
+      loadEvents()
+      checkRole()
+    }
   }, [session, currentGroup])
+
+  async function checkRole() {
+    const { data } = await supabase
+      .from('group_members')
+      .select('role')
+      .eq('group_id', currentGroup.id)
+      .eq('user_id', session.user.id)
+      .single()
+
+    setIsAdmin(data?.role === 'admin')
+  }
 
   async function loadEvents() {
     setLoading(true)
@@ -98,7 +113,7 @@ export default function App() {
       <nav>
         <button onClick={() => setView('events')}>Events</button>
         <button onClick={() => setView('games')}>Games</button>
-        <button onClick={() => setView('admin')}>Admin</button>
+        {isAdmin && <button onClick={() => setView('admin')}>Admin</button>}
         <button onClick={() => setView('settings')}>User</button>
       </nav>
 
@@ -126,7 +141,7 @@ export default function App() {
         </>
       )}
 
-      {view === 'admin' && <AdminPanel groupId={currentGroup.id} />}
+      {view === 'admin' && isAdmin && <AdminPanel groupId={currentGroup.id} />}
 
     </AppShell>
   )
