@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { createGame, listGames } from '../../services/gamesService.js'
 
-export default function GamesPage({ userId }) {
+export default function GamesPage({ userId, groupId }) {
   const [games, setGames] = useState([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -46,7 +46,8 @@ export default function GamesPage({ userId }) {
       maxPlayers: Number(maxPlayers),
       playTimeMinutes: Number(playTimeMinutes),
       notes: notes.trim(),
-      userId
+      userId,
+      groupId
     })
     setSaving(false)
 
