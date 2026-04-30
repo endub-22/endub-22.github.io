@@ -5,7 +5,7 @@ function todayIso() {
   return new Date().toISOString().slice(0, 10)
 }
 
-export default function EventForm({ userId, onCreated }) {
+export default function EventForm({ userId, groupId, onCreated }) {
   const [title, setTitle] = useState('')
   const [date, setDate] = useState(todayIso())
   const [time, setTime] = useState('19:00')
@@ -30,7 +30,8 @@ export default function EventForm({ userId, onCreated }) {
       time,
       location: location.trim(),
       notes: notes.trim(),
-      userId
+      userId,
+      groupId
     })
     setSaving(false)
 
