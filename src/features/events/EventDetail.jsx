@@ -13,11 +13,13 @@ export default function EventDetail({ event, onBack }) {
   const [attendees, setAttendees] = useState([])
   const [isAttending, setIsAttending] = useState(false)
 
+  const groupId = event.groupId || event.group_id
+
   useEffect(() => {
     loadPoll()
     loadGames()
     loadAttendance()
-  }, [event.id])
+  }, [event.id, groupId])
 
   async function loadPoll() {
     const { data } = await getPollForEvent(event.id)
@@ -25,9 +27,8 @@ export default function EventDetail({ event, onBack }) {
   }
 
   async function loadGames() {
-    const gid = event.groupId || event.group_id
-    if (!gid) return
-    const { data } = await listGames(gid)
+    if (!groupId) return
+    const { data } = await listGames(groupId)
     setGames(data)
   }
 
