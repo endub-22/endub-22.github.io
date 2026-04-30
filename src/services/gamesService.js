@@ -1,6 +1,10 @@
 import { supabase } from '../lib/supabaseClient.js'
 
 export async function listGames(groupId) {
+  if (!groupId) {
+    return { data: [], error: null }
+  }
+
   const { data, error } = await supabase
     .from('games')
     .select('id,title,min_players,max_players,play_time_minutes,owner_id,notes,created_at,group_id')
