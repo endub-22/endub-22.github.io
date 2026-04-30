@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabaseClient.js'
 export async function listGames() {
   const { data, error } = await supabase
     .from('games')
-    .select('id,title,min_players,max_players,play_time_minutes,owner_id,notes,created_at')
+    .select('id,title,min_players,max_players,play_time_minutes,owner_id,notes,created_at,group_id')
     .order('title', { ascending: true })
 
   if (error) return { data: [], error }
@@ -16,6 +16,7 @@ export async function listGames() {
       maxPlayers: g.max_players,
       playTimeMinutes: g.play_time_minutes,
       ownerId: g.owner_id,
+      groupId: g.group_id,
       notes: g.notes || '',
       createdAt: g.created_at
     })),
@@ -23,7 +24,7 @@ export async function listGames() {
   }
 }
 
-export async function createGame({ title, minPlayers, maxPlayers, playTimeMinutes, notes, userId }) {
+export async function createGame({ title, minPlayers, maxPlayers, playTimeMinutes, notes, userId, groupId }) {
   const { data, error } = await supabase
     .from('games')
     .insert({
@@ -32,9 +33,10 @@ export async function createGame({ title, minPlayers, maxPlayers, playTimeMinute
       max_players: maxPlayers,
       play_time_minutes: playTimeMinutes,
       notes,
-      owner_id: userId
+      owner_id: userId,
+      group_id: groupId
     })
-    .select('id,title,min_players,max_players,play_time_minutes,owner_id,notes,created_at')
+    .select('id,title,min_players,max_players,play_time_minutes,owner_id,notes,created_at,group_id')
     .single()
 
   if (error) return { data: null, error }
@@ -47,6 +49,7 @@ export async function createGame({ title, minPlayers, maxPlayers, playTimeMinute
       maxPlayers: data.max_players,
       playTimeMinutes: data.play_time_minutes,
       ownerId: data.owner_id,
+      groupId: data.group_id,
       notes: data.notes || '',
       createdAt: data.created_at
     },
