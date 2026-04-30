@@ -13,13 +13,13 @@ export default function GamesPage({ userId, groupId }) {
   const [notes, setNotes] = useState('')
 
   useEffect(() => {
-    loadGames()
-  }, [])
+    if (groupId) loadGames()
+  }, [groupId])
 
   async function loadGames() {
     setLoading(true)
     setError('')
-    const { data, error } = await listGames()
+    const { data, error } = await listGames(groupId)
     if (error) setError(error.message)
     else setGames(data)
     setLoading(false)
